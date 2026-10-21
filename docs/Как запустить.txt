@@ -1,4 +1,4 @@
-SpaceMap — карта занятого места на диске (как SpaceSniffer, только для Mac)
+SpaceMap — карта занятого места на диске для Mac
 
 Нужна macOS 13 Ventura или новее. Работает и на Apple Silicon (M1–M4), и на Intel.
 
