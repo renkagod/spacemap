@@ -8,10 +8,17 @@ struct SpaceMapApp: App {
     @StateObject private var model = AppModel.shared
 
     var body: some Scene {
-        Window("SpaceMap", id: "main") {
+        // A WindowGroup rather than a Window: when the app is launched to open a folder (dropped on
+        // the Dock icon, or passed on the command line) a Window scene opens no window at all.
+        WindowGroup("SpaceMap") {
             ContentView()
                 .environmentObject(model)
+                .onOpenURL { url in
+                    if isDirectory(url) { model.startScan(url: url) }
+                }
+                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
         }
+        .handlesExternalEvents(matching: ["*"])
         .defaultSize(width: 1280, height: 800)
         .commands {
             CommandGroup(replacing: .newItem) {
@@ -39,6 +46,10 @@ struct SpaceMapApp: App {
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        NSWindow.allowsAutomaticWindowTabbing = false
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.activate(ignoringOtherApps: true)
         LaunchOptions.apply(to: AppModel.shared)
@@ -47,12 +58,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         true
     }
-
-    /// A folder dropped on the Dock icon.
-    func application(_ application: NSApplication, open urls: [URL]) {
-        guard let url = urls.first(where: { $0.hasDirectoryPath || isDirectory($0) }) else { return }
-        AppModel.shared.startScan(url: url)
-    }
 }
 
 func isDirectory(_ url: URL) -> Bool {
@@ -60,7 +65,8 @@ func isDirectory(_ url: URL) -> Bool {
     return FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) && isDirectory.boolValue
 }
 
-/// Command line: `SpaceMap [folder]` scans the folder right away.
+/// Command line: `SpaceMap --scan <folder>` scans the folder right away. AppKit reads arguments as
+/// `-key value` pairs, so flags without a value go last.
 /// `--snapshot file.png --delay N` saves a picture of the window after N seconds and quits (used by CI);
 /// `--hover`, `--focus <category>`, `--tab <contents|largest|types>` and `--logical` set up the picture.
 enum LaunchOptions {
@@ -105,7 +111,7 @@ enum LaunchOptions {
                 } else if argument.hasPrefix("-") {
                     index += 2 // NSUserDefaults-style "-Key value"
                 } else {
-                    if isDirectory(URL(fileURLWithPath: argument)) { scanPath = argument }
+                    // AppKit opens bare paths itself; they arrive through onOpenURL.
                     index += 1
                 }
             }

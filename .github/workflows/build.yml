@@ -40,9 +40,11 @@ jobs:
           python3 scripts/make_demo_tree.py "$DEMO"
 
           "$APP_BIN" --snapshot "$PWD/shots/welcome.png" --delay 4 || true
-          "$APP_BIN" --logical --scan "$DEMO" --snapshot "$PWD/shots/map.png" --delay 8 --hover || true
-          "$APP_BIN" --logical --scan "$DEMO" --snapshot "$PWD/shots/types.png" --delay 8 --tab types --focus video || true
-          "$APP_BIN" --logical --scan "$DEMO" --snapshot "$PWD/shots/largest.png" --delay 8 --tab largest || true
+          # A bare path is opened by AppKit itself, like a folder dropped on the Dock icon.
+          # AppKit reads arguments as "-key value" pairs, so flags without a value go last.
+          "$APP_BIN" "$DEMO" --snapshot "$PWD/shots/map.png" --delay 8 --logical --hover || true
+          "$APP_BIN" --scan "$DEMO" --snapshot "$PWD/shots/types.png" --delay 8 --tab types --focus video --logical || true
+          "$APP_BIN" --scan "$DEMO" --snapshot "$PWD/shots/largest.png" --delay 8 --tab largest --logical || true
           "$APP_BIN" --scan "$HOME" --snapshot "$PWD/shots/home.png" --delay 25 --hover || true
           ls -la shots
 
