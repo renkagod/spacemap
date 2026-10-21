@@ -145,7 +145,7 @@ final class AppModel: ObservableObject {
 
     private(set) var selectedNode: FileNode?
     private weak var treemapView: TreemapView?
-    private var scanner: Scanner?
+    private var scanner: DiskScanner?
     private var rescanTarget: FileNode?
     private var tickTimer: Timer?
     private var tickCount = 0
@@ -178,7 +178,7 @@ final class AppModel: ObservableObject {
         scanner = nil
         rescanTarget = nil
 
-        let scanner = Scanner(path: url.path, treeLock: treeLock)
+        let scanner = DiskScanner(path: url.path, treeLock: treeLock)
         let fileManager = FileManager.default
         if scanner.rootPath == "/" {
             scanner.root.displayName = VolumeInfo.containing("/")?.name ?? "Macintosh HD"
@@ -215,7 +215,7 @@ final class AppModel: ObservableObject {
             if let root { startScan(url: URL(fileURLWithPath: root.path)) }
             return
         }
-        let scanner = Scanner(path: node.path, treeLock: treeLock, rootName: node.name)
+        let scanner = DiskScanner(path: node.path, treeLock: treeLock, rootName: node.name)
         self.scanner = scanner
         rescanTarget = node
         progress.target = node.title
@@ -552,10 +552,10 @@ final class AppModel: ObservableObject {
                     counts[index] += child.kind == .package ? 1 : child.fileCount
                     if top.count < topLimit {
                         top.append((child, size))
-                        if top.count == topLimit { topMinimum = top.map(\.1).min() ?? 0 }
+                        if top.count == topLimit { topMinimum = top.map { $0.1 }.min() ?? 0 }
                     } else if size > topMinimum, let minIndex = top.indices.min(by: { top[$0].1 < top[$1].1 }) {
                         top[minIndex] = (child, size)
-                        topMinimum = top.map(\.1).min() ?? 0
+                        topMinimum = top.map { $0.1 }.min() ?? 0
                     }
                 }
             }

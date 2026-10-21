@@ -23,7 +23,7 @@ public struct ScanStats: Sendable {
 /// The tree grows while the scan runs; every change to it happens under `treeLock`, so the UI
 /// can lay out a live, partial tree. Sizes match `du`: allocated blocks, hard links counted once,
 /// symlinks not followed, other volumes not entered.
-public final class Scanner {
+public final class DiskScanner {
     public let root: FileNode
     public let rootPath: String
     public let treeLock: NSLock

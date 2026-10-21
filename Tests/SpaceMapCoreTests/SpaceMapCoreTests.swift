@@ -55,8 +55,8 @@ final class ScannerTests: XCTestCase {
         try Data(repeating: 0x5A, count: bytes).write(to: url)
     }
 
-    private func scan(_ path: String) -> (Scanner, ScanStats) {
-        let scanner = Scanner(path: path, treeLock: NSLock(), threads: 4)
+    private func scan(_ path: String) -> (DiskScanner, ScanStats) {
+        let scanner = DiskScanner(path: path, treeLock: NSLock(), threads: 4)
         let done = expectation(description: "scan")
         var result = ScanStats()
         scanner.start(completionQueue: DispatchQueue.global()) { stats in
@@ -143,7 +143,7 @@ final class ScannerTests: XCTestCase {
 
         try write("y/four.bin", bytes: 5_000)
         let y = try XCTUnwrap(root.children.first { $0.name == "y" })
-        let rescanner = Scanner(path: y.path, treeLock: NSLock(), rootName: "y", threads: 2)
+        let rescanner = DiskScanner(path: y.path, treeLock: NSLock(), rootName: "y", threads: 2)
         let done = expectation(description: "rescan")
         rescanner.start(completionQueue: DispatchQueue.global()) { _ in done.fulfill() }
         wait(for: [done], timeout: 30)
@@ -180,7 +180,7 @@ final class ScannerTests: XCTestCase {
         for index in 0..<200 {
             try write("d\(index)/f.bin", bytes: 10)
         }
-        let scanner = Scanner(path: directory.path, treeLock: NSLock(), threads: 2)
+        let scanner = DiskScanner(path: directory.path, treeLock: NSLock(), threads: 2)
         let done = expectation(description: "cancelled")
         scanner.start(completionQueue: DispatchQueue.global()) { stats in
             XCTAssertTrue(stats.cancelled)
