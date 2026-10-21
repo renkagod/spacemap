@@ -42,10 +42,5 @@ codesign --force --deep --sign - "$BUNDLE"
 codesign --verify --deep --strict "$BUNDLE"
 lipo -info "$BUNDLE/Contents/MacOS/$APP"
 
-PACKAGE="$OUT/package/SpaceMap"
-mkdir -p "$PACKAGE"
-ditto "$BUNDLE" "$PACKAGE/$APP.app"
-cp "docs/Как запустить.txt" "$PACKAGE/"
-(cd "$OUT/package" && ditto -c -k --sequesterRsrc --keepParent SpaceMap "../$APP-macOS.zip")
-rm -rf "$OUT/package"
+(cd "$OUT" && ditto -c -k --sequesterRsrc --keepParent "$APP.app" "$APP-macOS.zip")
 echo "Done: $BUNDLE and $OUT/$APP-macOS.zip"
