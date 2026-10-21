@@ -61,13 +61,15 @@ func isDirectory(_ url: URL) -> Bool {
 }
 
 /// Command line: `SpaceMap [folder]` scans the folder right away.
-/// `--snapshot file.png --delay N` saves a picture of the window after N seconds and quits (used by CI).
+/// `--snapshot file.png --delay N` saves a picture of the window after N seconds and quits (used by CI);
+/// `--hover` and `--focus <category>` set up the picture.
 enum LaunchOptions {
     static func apply(to model: AppModel) {
         var scanPath: String?
         var snapshotPath: String?
         var delay: Double = 10
         var hover = false
+        var focus: FileCategory?
         let arguments = Array(CommandLine.arguments.dropFirst())
         var index = 0
         while index < arguments.count {
@@ -86,6 +88,9 @@ enum LaunchOptions {
             case "--hover":
                 hover = true
                 index += 1
+            case "--focus":
+                focus = FileCategory.allCases.first { "\($0)" == value }
+                index += 2
             default:
                 if argument.hasPrefix("-psn") {
                     index += 1
@@ -106,6 +111,7 @@ enum LaunchOptions {
         if let snapshotPath {
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 if hover { model.simulateHoverOnLargest() }
+                if let focus { model.focusCategory = focus }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                     saveSnapshot(to: snapshotPath)
                     let stats = model.progress.lastResult ?? model.progress.stats

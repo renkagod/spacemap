@@ -20,6 +20,10 @@ fi
 mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources/ru.lproj"
 cp "$BIN_DIR/$APP" "$BUNDLE/Contents/MacOS/$APP"
 cp Resources/Info.plist "$BUNDLE/Contents/Info.plist"
+if [ -n "${VERSION:-}" ]; then
+    plutil -replace CFBundleShortVersionString -string "$VERSION" "$BUNDLE/Contents/Info.plist"
+    plutil -replace CFBundleVersion -string "${BUILD_NUMBER:-1}" "$BUNDLE/Contents/Info.plist"
+fi
 printf 'APPL????' > "$BUNDLE/Contents/PkgInfo"
 printf '"CFBundleDisplayName" = "SpaceMap";\n"CFBundleName" = "SpaceMap";\n' > "$BUNDLE/Contents/Resources/ru.lproj/InfoPlist.strings"
 

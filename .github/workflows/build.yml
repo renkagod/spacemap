@@ -3,14 +3,21 @@ name: Build
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
+
+permissions: {}
 
 jobs:
   build:
     runs-on: macos-15
     timeout-minutes: 30
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Toolchain
         run: |
@@ -24,37 +31,24 @@ jobs:
       - name: Build app
         run: bash scripts/build-app.sh
 
-      - name: Smoke test
+      - name: Screenshots
         run: |
           APP_BIN="$PWD/build/SpaceMap.app/Contents/MacOS/SpaceMap"
           mkdir -p shots
 
-          "$APP_BIN" --snapshot "$PWD/shots/welcome.png" --delay 4 &
-          PID=$!
-          sleep 7; screencapture -x shots/welcome-screen.png || true
-          wait $PID || true
-
-          "$APP_BIN" --scan /Applications --snapshot "$PWD/shots/applications.png" --delay 25 --hover &
-          PID=$!
-          sleep 12; screencapture -x shots/applications-scanning-screen.png || true
-          sleep 16; screencapture -x shots/applications-screen.png || true
-          wait $PID || true
-
-          "$APP_BIN" --scan "$HOME" --snapshot "$PWD/shots/home.png" --delay 20 &
-          PID=$!
-          sleep 24
-          wait $PID || true
-
-          echo "du for comparison:"
-          du -sk /Applications 2>/dev/null || true
+          "$APP_BIN" --snapshot "$PWD/shots/welcome.png" --delay 4 || true
+          "$APP_BIN" --scan "$HOME" --snapshot "$PWD/shots/home.png" --delay 25 --hover || true
+          "$APP_BIN" -AppleInterfaceStyle Dark --scan "$HOME" --snapshot "$PWD/shots/home-dark.png" --delay 25 || true
+          "$APP_BIN" -AppleInterfaceStyle Dark --scan "$HOME" --snapshot "$PWD/shots/focus.png" --delay 25 --focus archive || true
+          "$APP_BIN" --scan /Applications --snapshot "$PWD/shots/applications.png" --delay 25 --hover || true
           ls -la shots
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: SpaceMap-macOS
           path: build/SpaceMap-macOS.zip
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: screenshots

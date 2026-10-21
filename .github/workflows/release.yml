@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions: {}
+
+jobs:
+  release:
+    runs-on: macos-15
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Tests
+        run: swift test
+
+      - name: Build app
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: VERSION="${REF_NAME#v}" BUILD_NUMBER="$RUN_NUMBER" bash scripts/build-app.sh
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          gh release create "$REF_NAME" build/SpaceMap-macOS.zip \
+            --title "SpaceMap $REF_NAME" \
+            --notes-file .github/release-notes.md \
+            --verify-tag
