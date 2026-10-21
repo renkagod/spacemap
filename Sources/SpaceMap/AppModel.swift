@@ -30,6 +30,7 @@ final class ProgressState: ObservableObject {
 
 struct Row: Identifiable, Equatable {
     let node: FileNode
+    let path: String
     let name: String
     let subtitle: String?
     let size: Int64
@@ -508,7 +509,7 @@ final class AppModel: ObservableObject {
 
         let sorted = children.map { ($0, $0.size(mode)) }.sorted { $0.1 > $1.1 }.prefix(400)
         rows = sorted.map { node, size in
-            Row(node: node, name: node.title, subtitle: nil, size: size,
+            Row(node: node, path: node.path, name: node.title, subtitle: nil, size: size,
                 fraction: total > 0 ? Double(size) / Double(total) : 0, symbol: node.symbol,
                 category: node.category, inaccessible: node.inaccessible)
         }
@@ -562,7 +563,7 @@ final class AppModel: ObservableObject {
             top.sort { $0.1 > $1.1 }
             let total = totals.reduce(0, +)
             let largest = top.map { node, size in
-                Row(node: node, name: node.title, subtitle: node.relativeDirectory(from: current),
+                Row(node: node, path: node.path, name: node.title, subtitle: node.relativeDirectory(from: current),
                     size: size, fraction: total > 0 ? Double(size) / Double(total) : 0,
                     symbol: node.symbol, category: node.category, inaccessible: false)
             }

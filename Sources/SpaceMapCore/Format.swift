@@ -24,12 +24,12 @@ public enum Format {
         return text.replacingOccurrences(of: ".", with: ",") + " " + units[unit]
     }
 
-    /// 1234567 → "1 234 567" (narrow no-break spaces).
+    /// 1234567 → "1 234 567" (no-break spaces).
     public static func count(_ value: Int64) -> String {
         let digits = String(abs(value))
         var result = ""
         for (index, character) in digits.enumerated() {
-            if index > 0 && (digits.count - index) % 3 == 0 { result.append("\u{202F}") }
+            if index > 0 && (digits.count - index) % 3 == 0 { result.append("\u{00A0}") }
             result.append(character)
         }
         return value < 0 ? "−" + result : result
@@ -69,7 +69,7 @@ public enum Format {
         } else {
             text = String(format: "%.0f", value)
         }
-        return text + "\u{202F}%"
+        return text + "\u{00A0}%"
     }
 
     public static func duration(_ seconds: TimeInterval) -> String {

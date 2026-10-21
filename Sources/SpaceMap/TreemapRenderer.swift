@@ -135,8 +135,8 @@ enum TreemapRenderer {
                 context.saveGState()
                 context.clip(to: rect)
                 context.drawLinearGradient(gradient, start: CGPoint(x: rect.minX, y: rect.minY),
-                                           end: CGPoint(x: rect.minX + rect.width * 0.25, y: rect.maxY),
-                                           options: [])
+                                           end: CGPoint(x: rect.minX, y: rect.maxY),
+                                           options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
                 context.restoreGState()
                 context.setStrokeColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: dim ? 0.04 : 0.16))
                 context.setLineWidth(1)

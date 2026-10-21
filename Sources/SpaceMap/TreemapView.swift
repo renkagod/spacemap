@@ -60,6 +60,11 @@ final class TreemapView: NSView {
         super.init(frame: frameRect)
         wantsLayer = true
         layerContentsRedrawPolicy = .onSetNeedsDisplay
+        if #available(macOS 14.0, *) {
+            // Since macOS 14 views draw outside their bounds by default and the dirty rect can
+            // stick out over the neighbours.
+            clipsToBounds = true
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -145,9 +150,10 @@ final class TreemapView: NSView {
     // MARK: - Drawing
 
     override func draw(_ dirtyRect: NSRect) {
-        NSColor(cgColor: TreemapRenderer.background)?.setFill()
-        dirtyRect.fill()
         let full = bounds
+        NSBezierPath(rect: full).setClip()
+        NSColor(cgColor: TreemapRenderer.background)?.setFill()
+        dirtyRect.intersection(full).fill()
 
         if let animation {
             let p = animation.eased

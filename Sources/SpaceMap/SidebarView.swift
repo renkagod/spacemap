@@ -1,3 +1,4 @@
+import AppKit
 import SpaceMapCore
 import SwiftUI
 
@@ -184,10 +185,18 @@ private struct NodeRow: View {
 
     var body: some View {
         HStack(spacing: 9) {
-            Image(systemName: row.inaccessible ? "lock.fill" : row.symbol)
-                .font(.system(size: 13))
-                .foregroundStyle(row.inaccessible ? Color.secondary : row.category.color)
-                .frame(width: 18)
+            Group {
+                if row.inaccessible {
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.secondary)
+                } else {
+                    Image(nsImage: IconCache.icon(for: row.path))
+                        .resizable()
+                        .interpolation(.high)
+                }
+            }
+            .frame(width: 20, height: 20)
             VStack(alignment: .leading, spacing: 3) {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(row.name)
@@ -305,5 +314,22 @@ private struct TypeRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+    }
+}
+
+/// Finder icons for sidebar rows.
+enum IconCache {
+    private static let cache: NSCache<NSString, NSImage> = {
+        let cache = NSCache<NSString, NSImage>()
+        cache.countLimit = 2000
+        return cache
+    }()
+
+    static func icon(for path: String) -> NSImage {
+        if let cached = cache.object(forKey: path as NSString) { return cached }
+        let image = NSWorkspace.shared.icon(forFile: path)
+        image.size = NSSize(width: 32, height: 32)
+        cache.setObject(image, forKey: path as NSString)
+        return image
     }
 }

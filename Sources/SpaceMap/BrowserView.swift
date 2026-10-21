@@ -36,13 +36,6 @@ struct BrowserView: View {
                 ScanStatus(progress: model.progress) { model.stopScan() }
             }
             ToolbarItemGroup(placement: .primaryAction) {
-                Picker("Размер", selection: $model.sizeMode) {
-                    ForEach(SizeMode.allCases, id: \.self) { mode in
-                        Text(mode.title).tag(mode)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .help("«На диске» — сколько места реально занято. «Длина файлов» — сумма размеров, как в Finder.")
                 RescanButton(progress: model.progress) { model.rescanCurrent() }
                 Button { model.closeScan() } label: {
                     Label("Новое сканирование", systemImage: "plus.magnifyingglass")
@@ -150,8 +143,18 @@ private struct PathBar: View {
                 }
                 .buttonStyle(.plain)
                 .help("Убрать подсветку (⌥Esc)")
-                .padding(.trailing, 10)
             }
+            Picker("Размер", selection: $model.sizeMode) {
+                ForEach(SizeMode.allCases, id: \.self) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .controlSize(.small)
+            .fixedSize()
+            .help("«На диске» — сколько места реально занято. «Длина файлов» — сумма размеров, как в Finder.")
+            .padding(.trailing, 10)
         }
         .frame(height: 34)
         .background(.bar)

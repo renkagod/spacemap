@@ -217,8 +217,11 @@ public final class DiskScanner {
                     }
                 }
                 let kind: NodeKind = type == S_IFREG ? .file : (type == S_IFLNK ? .symlink : .other)
-                let node = FileNode(name: name, parent: directory, kind: kind,
-                                    category: kind == .file ? FileCategory.forFileName(name) : .system)
+                var category = kind == .file ? FileCategory.forFileName(name) : .system
+                if category == .other && kind == .file && info.st_mode & S_IXUSR != 0 {
+                    category = .application // command line tools and other extensionless binaries
+                }
+                let node = FileNode(name: name, parent: directory, kind: kind, category: category)
                 node.allocated = fileAllocated
                 node.logical = fileLogical
                 node.fileCount = 1

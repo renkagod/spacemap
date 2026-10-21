@@ -206,7 +206,7 @@ final class FormatTests: XCTestCase {
         XCTAssertEqual(Format.files(3), "3 файла")
         XCTAssertEqual(Format.files(11), "11 файлов")
         XCTAssertEqual(Format.files(21), "21 файл")
-        XCTAssertEqual(Format.files(1234), "1\u{202F}234 файла")
+        XCTAssertEqual(Format.files(1234), "1\u{00A0}234 файла")
     }
 
     func testCategories() {
