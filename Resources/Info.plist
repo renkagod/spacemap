@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>ru</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ru</string>
+	</array>
+	<key>CFBundleDisplayName</key>
+	<string>SpaceMap</string>
+	<key>CFBundleName</key>
+	<string>SpaceMap</string>
+	<key>CFBundleExecutable</key>
+	<string>SpaceMap</string>
+	<key>CFBundleIdentifier</key>
+	<string>app.spacemap.SpaceMap</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSHumanReadableCopyright</key>
+	<string>SpaceMap — карта занятого места на диске</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>SpaceMap считает, сколько места занимают файлы на Рабочем столе.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>SpaceMap считает, сколько места занимают Документы.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>SpaceMap считает, сколько места занимают Загрузки.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>SpaceMap считает, сколько места занято на внешнем диске.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>SpaceMap считает, сколько места занято на сетевом диске.</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Папка</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.folder</string>
+				<string>public.volume</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

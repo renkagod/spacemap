@@ -1,0 +1,61 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      - name: Tests
+        run: swift test
+
+      - name: Build app
+        run: bash scripts/build-app.sh
+
+      - name: Smoke test
+        run: |
+          APP_BIN="$PWD/build/SpaceMap.app/Contents/MacOS/SpaceMap"
+          mkdir -p shots
+
+          "$APP_BIN" --snapshot "$PWD/shots/welcome.png" --delay 4 &
+          PID=$!
+          sleep 7; screencapture -x shots/welcome-screen.png || true
+          wait $PID || true
+
+          "$APP_BIN" --scan /Applications --snapshot "$PWD/shots/applications.png" --delay 25 --hover &
+          PID=$!
+          sleep 12; screencapture -x shots/applications-scanning-screen.png || true
+          sleep 16; screencapture -x shots/applications-screen.png || true
+          wait $PID || true
+
+          "$APP_BIN" --scan "$HOME" --snapshot "$PWD/shots/home.png" --delay 20 &
+          PID=$!
+          sleep 24
+          wait $PID || true
+
+          echo "du for comparison:"
+          du -sk /Applications 2>/dev/null || true
+          ls -la shots
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SpaceMap-macOS
+          path: build/SpaceMap-macOS.zip
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: shots/
