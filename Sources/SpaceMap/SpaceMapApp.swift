@@ -70,6 +70,8 @@ enum LaunchOptions {
         var delay: Double = 10
         var hover = false
         var focus: FileCategory?
+        var logical = false
+        var tab: SidebarTab?
         let arguments = Array(CommandLine.arguments.dropFirst())
         var index = 0
         while index < arguments.count {
@@ -89,10 +91,10 @@ enum LaunchOptions {
                 hover = true
                 index += 1
             case "--logical":
-                model.sizeMode = .logical
+                logical = true
                 index += 1
             case "--tab":
-                if let tab = value.flatMap(SidebarTab.init(rawValue:)) { model.sidebarTab = tab }
+                tab = value.flatMap(SidebarTab.init(rawValue:))
                 index += 2
             case "--focus":
                 focus = FileCategory.allCases.first { "\($0)" == value }
@@ -109,6 +111,11 @@ enum LaunchOptions {
             }
         }
 
+        // Applied after launch finishes, once the window exists.
+        DispatchQueue.main.async {
+            if logical { model.sizeMode = .logical }
+            if let tab { model.sidebarTab = tab }
+        }
         if let scanPath {
             DispatchQueue.main.async {
                 model.startScan(url: URL(fileURLWithPath: (scanPath as NSString).expandingTildeInPath))
@@ -132,7 +139,10 @@ enum LaunchOptions {
     }
 
     private static func saveSnapshot(to path: String) {
-        guard let window = NSApp.windows.first(where: { $0.isVisible && $0.contentView != nil }),
+        let candidates = NSApp.windows.filter { $0.contentView != nil && $0.frame.width > 300 }
+        let summary = NSApp.windows.map { "\($0.className) visible=\($0.isVisible) \(Int($0.frame.width))x\(Int($0.frame.height))" }
+        print("snapshot: windows " + summary.joined(separator: ", "))
+        guard let window = candidates.first(where: { $0.isVisible }) ?? candidates.first,
               let view = window.contentView?.superview ?? window.contentView,
               let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else {
             print("snapshot: no window")
