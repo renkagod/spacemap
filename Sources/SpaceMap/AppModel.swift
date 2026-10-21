@@ -706,7 +706,7 @@ final class AppModel: ObservableObject {
     /// Hovers the biggest item, for screenshots made by `--snapshot`.
     func simulateHoverOnLargest() {
         guard let view = treemapView else { return }
-        if let item = view.items.first(where: { $0.kind == .leaf }) {
+        if let item = view.items.filter({ $0.kind == .leaf }).max(by: { $0.size < $1.size }) {
             updateHover(item)
             selectNode(item.node)
         }

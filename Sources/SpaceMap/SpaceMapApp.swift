@@ -1,5 +1,4 @@
 import AppKit
-import CoreServices
 import SpaceMapCore
 import SwiftUI
 
@@ -56,34 +55,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// A folder dropped on the Dock icon or opened with SpaceMap from Finder.
     func application(_ application: NSApplication, open urls: [URL]) {
         guard let url = urls.first(where: isDirectory) else { return }
-        print("open: \(url.path)")
         AppModel.shared.startScan(url: url)
-        ensureWindow()
-    }
-
-    /// When the app is launched to open a folder, SwiftUI skips the initial window. Ask it to
-    /// reopen one, as a click on the Dock icon would.
-    private func ensureWindow(attempt: Int = 0) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            guard !NSApp.windows.contains(where: { $0.isVisible && $0.frame.width > 300 }) else { return }
-            switch attempt {
-            case 0:
-                _ = NSApp.delegate?.applicationShouldHandleReopen?(NSApp, hasVisibleWindows: false)
-            case 1:
-                let target = NSAppleEventDescriptor(processIdentifier: ProcessInfo.processInfo.processIdentifier)
-                let event = NSAppleEventDescriptor(eventClass: AEEventClass(kCoreEventClass),
-                                                   eventID: AEEventID(kAEReopenApplication),
-                                                   targetDescriptor: target,
-                                                   returnID: AEReturnID(kAutoGenerateReturnID),
-                                                   transactionID: AETransactionID(kAnyTransactionID))
-                _ = try? event.sendEvent(options: [.noReply], timeout: 1)
-            default:
-                print("ensureWindow: no window after \(attempt) attempts")
-                return
-            }
-            print("ensureWindow: attempt \(attempt)")
-            self.ensureWindow(attempt: attempt + 1)
-        }
     }
 }
 
@@ -138,7 +110,6 @@ enum LaunchOptions {
                 } else if argument.hasPrefix("-") {
                     index += 2 // NSUserDefaults-style "-Key value"
                 } else {
-                    // AppKit opens bare paths itself, through application(_:open:).
                     index += 1
                 }
             }

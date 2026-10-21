@@ -60,7 +60,7 @@ public enum FileCategory: UInt8, CaseIterable, Sendable {
         "photoslibrary": .image, "photolibrary": .image, "aplibrary": .image,
         "fcpbundle": .video, "imovielibrary": .video, "tvlibrary": .video,
         "musiclibrary": .audio, "logicx": .audio, "band": .audio,
-        "sparsebundle": .archive, "pkg": .archive, "mpkg": .archive,
+        "sparsebundle": .archive, "pkg": .archive, "mpkg": .archive, "utm": .archive, "pvm": .archive,
         "xcarchive": .code, "xcodeproj": .code, "xcworkspace": .code, "playground": .code,
         "dsym": .code, "docarchive": .code,
         "rtfd": .document, "pages": .document, "key": .document, "numbers": .document,
