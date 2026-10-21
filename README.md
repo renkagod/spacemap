@@ -1,24 +1,109 @@
+<div align="center">
+
+<img src="Resources/AppIcon.png" width="128" alt="">
+
 # SpaceMap
 
-Карта занятого места на диске для macOS, в духе SpaceSniffer: вложенный treemap,
-который рисуется прямо во время сканирования.
+**Карта занятого места на диске для macOS. Как SpaceSniffer, только нативный и для Mac.**
 
-- Быстрое многопоточное сканирование (readdir + lstat), размеры как у `du`: занятые блоки,
-  жёсткие ссылки один раз, симлинки и другие тома не учитываются.
-- Вложенные папки с заголовками, цвет по типу файлов, подсветка одного типа.
-- Двойной клик или щипок — зайти в папку, Esc / ⌘↑ / боковая кнопка мыши — наверх, с анимацией.
-- Список содержимого, самые крупные файлы и разбивка по типам для текущей папки.
-- Показать в Finder, открыть, скопировать путь, пересканировать, переместить в Корзину.
+[![Build](https://github.com/renkagod/spacemap/actions/workflows/build.yml/badge.svg)](https://github.com/renkagod/spacemap/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/release/renkagod/spacemap)](https://github.com/renkagod/spacemap/releases/latest)
+![macOS 13+](https://img.shields.io/badge/macOS-13%2B-blue)
+![Swift](https://img.shields.io/badge/Swift-5.9-orange)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Требуется macOS 13+. Инструкция для пользователя: [docs/Как запустить.txt](docs/Как%20запустить.txt).
+[**Скачать**](https://github.com/renkagod/spacemap/releases/latest/download/SpaceMap-macOS.zip) · Apple Silicon и Intel · 1 МБ
 
-## Сборка
+</div>
+
+<img src="docs/screenshots/map.png" alt="Карта папки: фильмы, виртуальные машины, фото и загрузки крупными блоками">
+
+Чем больше прямоугольник, тем больше места занимает файл или папка. Папки вложены друг в друга
+с заголовками и размерами, цвет показывает тип файлов. Карта строится прямо во время
+сканирования, ждать конца не нужно.
+
+## Возможности
+
+- **Вложенный treemap** в духе SpaceSniffer: папки рамками, файлы плитками, мелочь собрана
+  в блок «ещё N».
+- **Быстрое сканирование** на всех ядрах (`readdir` + `lstat`). Размеры считаются как у `du`:
+  занятые блоки, жёсткие ссылки один раз, симлинки и другие диски не учитываются.
+- **Навигация**: двойной клик или щипок — зайти в папку, Esc, ⌘↑, боковая кнопка мыши или
+  свайп — наверх. Переходы анимированы.
+- **Боковая панель**: содержимое текущей папки, самые крупные файлы в ней и разбивка по типам.
+- **Подсветка типа**: клик по «Видео» в легенде или во вкладке «Типы» гасит всё остальное.
+- **Действия**: открыть, показать в Finder, скопировать путь, пересканировать папку,
+  переместить в Корзину.
+- **Два режима размера**: «На диске» (реально занятое место) и «Длина файлов» (как в Finder).
+- Приложения, медиатека «Фото», проекты Logic и другие пакеты показаны одним блоком, как в Finder.
+- Папку можно перетащить в окно или на иконку в Dock.
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/types.png" alt="Вкладка «Типы» и подсветка видео на карте"></td>
+    <td><img src="docs/screenshots/largest.png" alt="Самые крупные файлы в папке"></td>
+  </tr>
+  <tr>
+    <td align="center">Разбивка по типам и подсветка видео</td>
+    <td align="center">Самые крупные файлы</td>
+  </tr>
+</table>
+
+## Установка
+
+1. Скачай [`SpaceMap-macOS.zip`](https://github.com/renkagod/spacemap/releases/latest/download/SpaceMap-macOS.zip)
+   со страницы [релизов](https://github.com/renkagod/spacemap/releases), распакуй и перетащи
+   `SpaceMap.app` в «Программы».
+2. Приложение не подписано сертификатом Apple, поэтому при первом запуске macOS его заблокирует.
+   Открой Системные настройки → Конфиденциальность и безопасность и нажми «Всё равно открыть».
+   Или выполни в Терминале:
+
+   ```bash
+   xattr -cr /Applications/SpaceMap.app
+   ```
+
+3. Чтобы видеть весь диск, включая почту, «Сообщения» и системные папки, дай SpaceMap
+   «Полный доступ к диску» в тех же настройках. Без него приложение тоже работает, просто
+   покажет такие папки недоступными.
+
+Нужна macOS 13 Ventura или новее.
+
+## Сборка из исходников
+
+Нужен Swift 5.9+: Xcode или Command Line Tools (`xcode-select --install`).
 
 ```bash
+git clone https://github.com/renkagod/spacemap.git
+cd spacemap
 bash scripts/build-app.sh
+open build/SpaceMap.app
 ```
 
-Нужен Swift 5.9+ (Xcode или Command Line Tools). Результат: `build/SpaceMap.app` и
-`build/SpaceMap-macOS.zip`. С полным Xcode собирается универсальный бинарник arm64 + x86_64.
+С полным Xcode получится универсальный бинарник arm64 + x86_64, с одними Command Line Tools —
+под твой Mac. Рядом появится `build/SpaceMap-macOS.zip`, такой же, как в релизе.
 
-Тесты: `swift test`. Иконка перерисовывается `python scripts/make_icon.py` (нужен Pillow).
+Тесты: `swift test`.
+
+## Как устроено
+
+| Где | Что |
+|---|---|
+| [`Sources/SpaceMapCore/DiskScanner.swift`](Sources/SpaceMapCore/DiskScanner.swift) | Многопоточный обход, дерево растёт под одной блокировкой, интерфейс читает его на лету |
+| [`Sources/SpaceMapCore/Treemap.swift`](Sources/SpaceMapCore/Treemap.swift) | Squarified treemap (Bruls, Huizing, van Wijk) с вложенными папками и склейкой мелочи |
+| [`Sources/SpaceMap/TreemapRenderer.swift`](Sources/SpaceMap/TreemapRenderer.swift) | Отрисовка в битмап на Core Graphics и Core Text в фоновом потоке |
+| [`Sources/SpaceMap/TreemapView.swift`](Sources/SpaceMap/TreemapView.swift) | NSView: наведение, клики, меню, жесты и анимация зума |
+| [`Sources/SpaceMap/*View.swift`](Sources/SpaceMap) | Интерфейс на SwiftUI |
+
+Никаких зависимостей, только системные фреймворки.
+
+Новая версия выходит так: `git tag v1.2.3 && git push origin v1.2.3`. CI соберёт приложение,
+прогонит тесты и выложит zip в релиз.
+
+## Участие
+
+Баги и идеи — в [issues](https://github.com/renkagod/spacemap/issues). Пулл-реквесты
+приветствуются: перед отправкой проверь, что проходят `swift test` и `bash scripts/build-app.sh`.
+
+## Лицензия
+
+[MIT](LICENSE)
