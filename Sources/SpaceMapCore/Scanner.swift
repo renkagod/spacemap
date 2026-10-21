@@ -57,15 +57,16 @@ public final class Scanner {
 
         let lastComponent = (resolved as NSString).lastPathComponent
         let packageCategory = FileCategory.packageCategory(forDirectoryName: lastComponent)
-        root = FileNode(name: rootName ?? resolved, parent: nil,
-                        kind: packageCategory == nil ? .directory : .package,
-                        category: packageCategory ?? .folder)
+        let rootNode = FileNode(name: rootName ?? resolved, parent: nil,
+                                kind: packageCategory == nil ? .directory : .package,
+                                category: packageCategory ?? .folder)
+        root = rootNode
 
         var devices = Set<dev_t>()
         var info = stat()
         if stat(resolved, &info) == 0 {
             devices.insert(info.st_dev)
-            root.allocated = Int64(info.st_blocks) * 512
+            rootNode.allocated = Int64(info.st_blocks) * 512
         }
         // The startup disk is two APFS volumes (sealed system + data) stitched together with
         // firmlinks; treat them as one so /Applications, /Users and friends are not skipped.

@@ -317,7 +317,7 @@ final class AppModel: ObservableObject {
     func zoom(into node: FileNode, from rect: CGRect? = nil) {
         guard node.isContainer, node !== current else { return }
         current = node
-        refreshAll(rect.map { .zoomIn($0) } ?? .fade)
+        refreshAll(rect.map { TreemapView.Transition.zoomIn($0) } ?? .fade)
     }
 
     func goUp() {

@@ -77,10 +77,10 @@ struct WelcomeView: View {
             }
         }
         .onAppear { volumes = VolumeInfo.mounted() }
-        .onReceive(NotificationCenter.default.publisher(for: NSWorkspace.didMountNotification)) { _ in
+        .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didMountNotification)) { _ in
             volumes = VolumeInfo.mounted()
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSWorkspace.didUnmountNotification)) { _ in
+        .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didUnmountNotification)) { _ in
             volumes = VolumeInfo.mounted()
         }
     }
