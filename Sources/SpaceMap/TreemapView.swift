@@ -114,24 +114,17 @@ final class TreemapView: NSView {
 
     // MARK: - Geometry
 
-    private var layoutScale: CGSize {
-        CGSize(width: imageSize.width > 0 ? bounds.width / imageSize.width : 1,
-               height: imageSize.height > 0 ? bounds.height / imageSize.height : 1)
-    }
-
+    /// Layout coordinates are view coordinates: until a frame for a new size arrives, the old
+    /// one is drawn as is, without stretching.
     private func toView(_ rect: CGRect) -> CGRect {
-        let s = layoutScale
-        return CGRect(x: rect.minX * s.width, y: rect.minY * s.height,
-                      width: rect.width * s.width, height: rect.height * s.height)
+        rect
     }
 
     private func itemIndex(at point: CGPoint) -> Int? {
-        let s = layoutScale
-        let p = CGPoint(x: point.x / s.width, y: point.y / s.height)
         // Items are in depth-first order and siblings never overlap, so the last hit is the deepest.
         var index = items.count - 1
         while index >= 0 {
-            if items[index].rect.contains(p) { return index }
+            if items[index].rect.contains(point) { return index }
             index -= 1
         }
         return nil
@@ -180,7 +173,8 @@ final class TreemapView: NSView {
             return
         }
 
-        image?.draw(in: full, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: true, hints: nil)
+        image?.draw(in: CGRect(origin: .zero, size: imageSize), from: .zero, operation: .sourceOver,
+                    fraction: 1, respectFlipped: true, hints: nil)
 
         if let index = selectedIndex, index < items.count {
             let rect = toView(items[index].rect).insetBy(dx: 1, dy: 1)

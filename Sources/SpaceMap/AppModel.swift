@@ -156,6 +156,7 @@ final class AppModel: ObservableObject {
     private let summaryQueue = DispatchQueue(label: "SpaceMap.summary", qos: .utility)
     private let generationLock = NSLock()
     private var renderGeneration = 0
+    private var shownRenderGeneration = 0
     private var summaryGeneration = 0
 
     // MARK: - Derived state
@@ -402,11 +403,15 @@ final class AppModel: ObservableObject {
         requestRender(.none)
     }
 
+    /// Throttled rather than debounced, so the map keeps up while the window is being resized.
     private func scheduleResizeRender() {
-        resizeWork?.cancel()
-        let work = DispatchWorkItem { [weak self] in self?.requestRender(.none) }
+        guard resizeWork == nil else { return }
+        let work = DispatchWorkItem { [weak self] in
+            self?.resizeWork = nil
+            self?.requestRender(.none)
+        }
         resizeWork = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.03, execute: work)
     }
 
     private func nextRenderGeneration() -> Int {
@@ -451,13 +456,17 @@ final class AppModel: ObservableObject {
         let generation = nextRenderGeneration()
 
         renderQueue.async { [weak self] in
+            // A newer request is already queued behind this one.
             guard let self, self.isLatestRender(generation) else { return }
             let items = TreemapLayout.layout(root: current, in: CGRect(origin: .zero, size: size),
                                              options: options, lock: lock)
-            guard self.isLatestRender(generation) else { return }
             let image = TreemapRenderer.render(items: items, size: size, scale: scale, focus: focus)
             DispatchQueue.main.async {
-                guard self.isLatestRender(generation), let view = self.treemapView else { return }
+                // A finished frame of the same folder beats waiting for the newest one: during a
+                // window resize requests keep coming faster than frames are drawn.
+                guard generation > self.shownRenderGeneration, current === self.current,
+                      let view = self.treemapView else { return }
+                self.shownRenderGeneration = generation
                 view.show(items: items, image: image, size: size, transition: transition)
             }
         }
