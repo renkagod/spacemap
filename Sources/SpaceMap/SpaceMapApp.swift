@@ -62,7 +62,7 @@ func isDirectory(_ url: URL) -> Bool {
 
 /// Command line: `SpaceMap [folder]` scans the folder right away.
 /// `--snapshot file.png --delay N` saves a picture of the window after N seconds and quits (used by CI);
-/// `--hover` and `--focus <category>` set up the picture.
+/// `--hover`, `--focus <category>`, `--tab <contents|largest|types>` and `--logical` set up the picture.
 enum LaunchOptions {
     static func apply(to model: AppModel) {
         var scanPath: String?
@@ -88,6 +88,12 @@ enum LaunchOptions {
             case "--hover":
                 hover = true
                 index += 1
+            case "--logical":
+                model.sizeMode = .logical
+                index += 1
+            case "--tab":
+                if let tab = value.flatMap(SidebarTab.init(rawValue:)) { model.sidebarTab = tab }
+                index += 2
             case "--focus":
                 focus = FileCategory.allCases.first { "\($0)" == value }
                 index += 2

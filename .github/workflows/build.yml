@@ -36,11 +36,14 @@ jobs:
           APP_BIN="$PWD/build/SpaceMap.app/Contents/MacOS/SpaceMap"
           mkdir -p shots
 
+          DEMO="$RUNNER_TEMP/Мои файлы"
+          python3 scripts/make_demo_tree.py "$DEMO"
+
           "$APP_BIN" --snapshot "$PWD/shots/welcome.png" --delay 4 || true
+          "$APP_BIN" --logical --scan "$DEMO" --snapshot "$PWD/shots/map.png" --delay 8 --hover || true
+          "$APP_BIN" --logical --scan "$DEMO" --snapshot "$PWD/shots/types.png" --delay 8 --tab types --focus video || true
+          "$APP_BIN" --logical --scan "$DEMO" --snapshot "$PWD/shots/largest.png" --delay 8 --tab largest || true
           "$APP_BIN" --scan "$HOME" --snapshot "$PWD/shots/home.png" --delay 25 --hover || true
-          "$APP_BIN" -AppleInterfaceStyle Dark --scan "$HOME" --snapshot "$PWD/shots/home-dark.png" --delay 25 || true
-          "$APP_BIN" -AppleInterfaceStyle Dark --scan "$HOME" --snapshot "$PWD/shots/focus.png" --delay 25 --focus archive || true
-          "$APP_BIN" --scan /Applications --snapshot "$PWD/shots/applications.png" --delay 25 --hover || true
           ls -la shots
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

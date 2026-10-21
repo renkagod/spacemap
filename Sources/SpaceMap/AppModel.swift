@@ -130,6 +130,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var volume: VolumeInfo?
     @Published private(set) var inaccessibleCount = 0
     @Published var accessBannerDismissed = false
+    @Published var sidebarTab: SidebarTab = .contents
     @Published var selectedID: ObjectIdentifier? {
         didSet {
             guard selectedID != oldValue, selectedID != selectedNode.map({ ObjectIdentifier($0) }) else { return }

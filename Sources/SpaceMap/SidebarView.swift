@@ -2,20 +2,19 @@ import AppKit
 import SpaceMapCore
 import SwiftUI
 
-private enum SidebarTab: Hashable {
+enum SidebarTab: String, Hashable {
     case contents, largest, types
 }
 
 struct SidebarView: View {
     @EnvironmentObject private var model: AppModel
-    @State private var tab: SidebarTab = .contents
 
     var body: some View {
         VStack(spacing: 0) {
             SummaryCard()
                 .padding(.horizontal, 12)
                 .padding(.top, 6)
-            Picker("Вид", selection: $tab) {
+            Picker("Вид", selection: $model.sidebarTab) {
                 Text("Содержимое").tag(SidebarTab.contents)
                 Text("Крупные").tag(SidebarTab.largest)
                 Text("Типы").tag(SidebarTab.types)
@@ -25,7 +24,7 @@ struct SidebarView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
 
-            switch tab {
+            switch model.sidebarTab {
             case .contents:
                 NodeList(rows: model.rows, emptyText: "Здесь пусто")
             case .largest:
