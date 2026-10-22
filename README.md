@@ -28,7 +28,7 @@ See what is eating your Mac's disk, as one big map you can walk through.<br>
 
 [**Download**](https://github.com/renkagod/spacemap/releases/latest/download/SpaceMap-macOS.zip) · Apple Silicon and Intel · 1 MB
 
-<img src="docs/screenshots/en/map.png" alt="Map of a home folder: movies, virtual machines, photos and downloads as large blocks">
+<img src="docs/screenshots/en/demo.gif" alt="Map of a home folder: zooming into Movies and TV Shows, back out, then videos highlighted">
 
 The bigger the rectangle, the more space the file or folder takes. Folders nest inside each other
 with their names and sizes, and the color shows the file type. The map fills in while the scan
@@ -134,7 +134,7 @@ Translations into new languages are welcome too, see [TRANSLATING.md](TRANSLATIN
 
 [**Скачать**](https://github.com/renkagod/spacemap/releases/latest/download/SpaceMap-macOS.zip) · Apple Silicon и Intel · 1 МБ
 
-<img src="docs/screenshots/ru/map.png" alt="Карта папки: фильмы, виртуальные машины, фото и загрузки крупными блоками">
+<img src="docs/screenshots/ru/demo.gif" alt="Карта папки: зум в «Фильмы» и «Сериалы», обратно наверх, затем подсвечены видео">
 
 Чем больше прямоугольник, тем больше места занимает файл или папка. Папки вложены друг в друга
 с заголовками и размерами, цвет показывает тип файлов. Карта строится прямо во время
