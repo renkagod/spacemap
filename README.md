@@ -21,8 +21,10 @@ See what is eating your Mac's disk, as one big map you can walk through.<br>
 
 ## English
 
-<a href="#english"><img src="docs/buttons/english.svg" width="200" alt="English"></a>
-<a href="#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9"><img src="docs/buttons/russian-dim.svg" width="200" alt="Русский"></a>
+<p align="center">
+<a href="#english"><img src="https://img.shields.io/badge/English-0969da?style=for-the-badge" alt="English"></a>
+<a href="#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9"><img src="https://img.shields.io/badge/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-6e7781?style=for-the-badge" alt="Русский"></a>
+</p>
 
 [**Download**](https://github.com/renkagod/spacemap/releases/latest/download/SpaceMap-macOS.zip) · Apple Silicon and Intel · 1 MB
 
@@ -125,8 +127,10 @@ Translations into new languages are welcome too, see [TRANSLATING.md](TRANSLATIN
 
 ## Русский
 
-<a href="#english"><img src="docs/buttons/english-dim.svg" width="200" alt="English"></a>
-<a href="#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9"><img src="docs/buttons/russian.svg" width="200" alt="Русский"></a>
+<p align="center">
+<a href="#english"><img src="https://img.shields.io/badge/English-6e7781?style=for-the-badge" alt="English"></a>
+<a href="#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9"><img src="https://img.shields.io/badge/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-0969da?style=for-the-badge" alt="Русский"></a>
+</p>
 
 [**Скачать**](https://github.com/renkagod/spacemap/releases/latest/download/SpaceMap-macOS.zip) · Apple Silicon и Intel · 1 МБ
 
