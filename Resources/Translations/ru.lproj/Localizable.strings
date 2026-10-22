@@ -1,0 +1,132 @@
+/* Текст интерфейса SpaceMap, русский. Переведено с en.lproj/Localizable.strings, см. TRANSLATING.md. */
+
+/* Menus */
+"menu.openFolder" = "Открыть папку…";
+"menu.newScan" = "Новое сканирование";
+"menu.navigation" = "Навигация";
+"menu.up" = "Наверх";
+"menu.top" = "К началу";
+"menu.rescanFolder" = "Пересканировать папку";
+"menu.stopScan" = "Остановить сканирование";
+"menu.clearHighlight" = "Сбросить подсветку типа";
+"menu.language" = "Язык";
+"menu.language.system" = "Системный";
+"menu.language.openFolder" = "Открыть папку переводов";
+"menu.language.help" = "Помочь с переводом…";
+
+/* Welcome screen */
+"welcome.tagline" = "Покажу, что съело место на диске — наглядно, большими блоками.";
+"welcome.volumeUsage" = "Занято %1$@ из %2$@";
+"welcome.chooseFolder" = "Выбрать папку…";
+"welcome.chooseFolder.subtitle" = "или перетащи её в это окно";
+"welcome.access.hidden" = "Часть папок macOS прячет от программ: почту, «Сообщения», системные данные.";
+"welcome.access.grant" = "Чтобы учесть и их, дай SpaceMap «Полный доступ к диску».";
+"welcome.access.button" = "Открыть настройки";
+"home.title" = "Домашняя папка";
+
+/* Toolbar and scan status */
+"toolbar.up" = "Наверх";
+"toolbar.up.help" = "Наверх (⌘↑, Esc)";
+"toolbar.top" = "К началу";
+"toolbar.top.help" = "К началу (⇧⌘↑)";
+"toolbar.newScan.help" = "Выбрать другой диск или папку (⌘N)";
+"toolbar.rescan.help" = "Пересканировать эту папку (⌘R)";
+"status.scanning" = "Сканирую «%@»";
+"status.stop.help" = "Остановить (⌘.)";
+"status.stopped" = "Остановлено: %@";
+"status.done" = "%1$@ за %2$@";
+
+/* Path bar above the map */
+"pathbar.highlighted" = "Подсвечено: %@";
+"pathbar.highlighted.help" = "Убрать подсветку (⌥Esc)";
+"pathbar.sizeMode" = "Размер";
+"pathbar.sizeMode.help" = "«На диске» — сколько места реально занято. «Длина файлов» — сумма размеров, как в Finder.";
+
+/* Map, its empty states and the status bar under it */
+"treemap.more" = "ещё %@";
+"empty.noAccess.title" = "macOS не пускает в эту папку";
+"empty.noAccess.detail" = "Дай SpaceMap «Полный доступ к диску» и пересканируй.";
+"empty.noAccess.button" = "Открыть настройки доступа";
+"empty.reading" = "Читаю содержимое…";
+"empty.folder" = "Папка пуста";
+"banner.inaccessible" = "%@ без доступа";
+"banner.detail" = "macOS защищает их. С «Полным доступом к диску» карта будет точнее.";
+"banner.button" = "Дать доступ";
+"banner.hide" = "Скрыть";
+"statusbar.hint" = "Двойной клик — внутрь · Esc — назад · правый клик — действия";
+"statusbar.hint.short" = "Двойной клик — внутрь · Esc — назад";
+"legend.highlight.help" = "Подсветить: %@";
+
+/* Sidebar */
+"sidebar.view" = "Вид";
+"sidebar.contents" = "Содержимое";
+"sidebar.largest" = "Крупные";
+"sidebar.types" = "Типы";
+"sidebar.empty.contents" = "Здесь пусто";
+"sidebar.empty.largest" = "Файлов пока нет";
+"sidebar.empty.types" = "Нет файлов";
+"sidebar.collecting" = "Собираю данные…";
+"sidebar.shareOfRoot" = "%1$@ от «%2$@»";
+"sidebar.types.footer" = "Нажми на тип, чтобы подсветить его на карте. Приложения и медиатеки считаются целиком.";
+"volume.thisFolder" = "Эта папка";
+"volume.rest" = "Остальное";
+"volume.free" = "Свободно %@";
+"volume.disk" = "Диск «%1$@»: %2$@";
+
+/* Actions on a file or folder (right-click menu) */
+"action.openOnMap" = "Открыть на карте";
+"action.open" = "Открыть";
+"action.reveal" = "Показать в Finder";
+"action.copyPath" = "Скопировать путь";
+"action.rescan" = "Пересканировать";
+"action.trash" = "Переместить в Корзину…";
+
+/* Folder picker */
+"picker.prompt" = "Сканировать";
+"picker.message" = "Выбери папку или диск, который нужно разобрать";
+
+/* Move to Trash dialog */
+"trash.title" = "Переместить «%@» в Корзину?";
+"trash.folder" = "Папка, %1$@, %2$@.";
+"trash.file" = "Файл, %@.";
+"trash.note" = "Место освободится, когда очистишь Корзину.";
+"trash.confirm" = "В Корзину";
+"trash.cancel" = "Отмена";
+"trash.failed" = "Не получилось переместить «%@» в Корзину";
+
+/* File types */
+"category.video" = "Видео";
+"category.image" = "Изображения";
+"category.audio" = "Музыка и звук";
+"category.archive" = "Архивы и образы";
+"category.application" = "Приложения";
+"category.document" = "Документы";
+"category.code" = "Код и разработка";
+"category.system" = "Системные и кэши";
+"category.other" = "Прочее";
+"category.folder" = "Папки";
+"category.video.short" = "Видео";
+"category.image.short" = "Фото";
+"category.audio.short" = "Звук";
+"category.archive.short" = "Архивы";
+"category.application.short" = "Программы";
+"category.document.short" = "Документы";
+"category.code.short" = "Код";
+"category.system.short" = "Система";
+"category.other.short" = "Прочее";
+"category.folder.short" = "Папки";
+
+/* Size modes */
+"size.allocated" = "На диске";
+"size.logical" = "Длина файлов";
+
+/* Units and number formats. \U00A0 is a no-break space. */
+"unit.B" = "Б";
+"unit.KB" = "КБ";
+"unit.MB" = "МБ";
+"unit.GB" = "ГБ";
+"unit.TB" = "ТБ";
+"unit.PB" = "ПБ";
+"format.percent" = "%@\U00A0%%";
+"duration.seconds" = "%@ с";
+"duration.minutes" = "%1$@ мин %2$@ с";

@@ -1,83 +1,64 @@
 import Foundation
 
-/// Russian number formatting, independent of the system locale.
+/// Numbers and sizes in the current UI language (`Localization.current`).
 public enum Format {
-    private static let units = ["Б", "КБ", "МБ", "ГБ", "ТБ", "ПБ"]
+    private static let unitKeys = ["unit.B", "unit.KB", "unit.MB", "unit.GB", "unit.TB", "unit.PB"]
 
-    /// Decimal units, like Finder: 1 ГБ = 1000³ bytes.
+    /// Decimal units, like Finder: 1 GB = 1000³ bytes.
     public static func bytes(_ value: Int64) -> String {
+        let translation = Localization.current
         var amount = Double(max(0, value))
         var unit = 0
-        while amount >= 999.5 && unit < units.count - 1 {
+        while amount >= 999.5 && unit < unitKeys.count - 1 {
             amount /= 1000
             unit += 1
         }
-        if unit == 0 { return "\(Int(amount)) Б" }
-        let text: String
-        if amount >= 99.95 {
-            text = String(format: "%.0f", amount)
-        } else if amount >= 9.995 {
-            text = String(format: "%.1f", amount)
-        } else {
-            text = String(format: "%.2f", amount)
-        }
-        return text.replacingOccurrences(of: ".", with: ",") + " " + units[unit]
+        let name = translation.string(unitKeys[unit])
+        if unit == 0 { return "\(translation.integer(Int64(amount))) \(name)" }
+        let digits = amount >= 99.95 ? 0 : amount >= 9.995 ? 1 : 2
+        return "\(translation.decimal(amount, digits: digits)) \(name)"
     }
 
-    /// 1234567 → "1 234 567" (no-break spaces).
+    /// 1234567 → "1,234,567" in English, "1 234 567" in Russian.
     public static func count(_ value: Int64) -> String {
-        let digits = String(abs(value))
-        var result = ""
-        for (index, character) in digits.enumerated() {
-            if index > 0 && (digits.count - index) % 3 == 0 { result.append("\u{00A0}") }
-            result.append(character)
-        }
-        return value < 0 ? "−" + result : result
-    }
-
-    public static func plural(_ value: Int64, _ one: String, _ few: String, _ many: String) -> String {
-        let n = abs(value) % 100
-        if (11...14).contains(n) { return many }
-        switch n % 10 {
-        case 1: return one
-        case 2, 3, 4: return few
-        default: return many
-        }
+        Localization.current.integer(value)
     }
 
     public static func files(_ value: Int64) -> String {
-        "\(count(value)) \(plural(value, "файл", "файла", "файлов"))"
+        Localization.current.plural("count.files", value)
     }
 
     public static func items(_ value: Int64) -> String {
-        "\(count(value)) \(plural(value, "объект", "объекта", "объектов"))"
+        Localization.current.plural("count.items", value)
     }
 
     public static func folders(_ value: Int64) -> String {
-        "\(count(value)) \(plural(value, "папка", "папки", "папок"))"
+        Localization.current.plural("count.folders", value)
     }
 
     public static func percent(_ fraction: Double) -> String {
+        let translation = Localization.current
         let value = max(0, fraction) * 100
         let text: String
         if value == 0 {
-            text = "0"
+            text = translation.integer(0)
         } else if value < 0.1 {
-            text = "<0,1"
+            text = "<" + translation.decimal(0.1, digits: 1)
         } else if value < 10 {
-            text = String(format: "%.1f", value).replacingOccurrences(of: ".", with: ",")
+            text = translation.decimal(value, digits: 1)
         } else {
-            text = String(format: "%.0f", value)
+            text = translation.decimal(value, digits: 0)
         }
-        return text + "\u{00A0}%"
+        return translation.format("format.percent", [text])
     }
 
     public static func duration(_ seconds: TimeInterval) -> String {
+        let translation = Localization.current
         if seconds < 10 {
-            return String(format: "%.1f", seconds).replacingOccurrences(of: ".", with: ",") + " с"
+            return translation.format("duration.seconds", [translation.decimal(seconds, digits: 1)])
         }
         let total = Int(seconds.rounded())
-        if total < 60 { return "\(total) с" }
-        return "\(total / 60) мин \(String(format: "%02d", total % 60)) с"
+        if total < 60 { return translation.format("duration.seconds", [String(total)]) }
+        return translation.format("duration.minutes", [String(total / 60), String(format: "%02d", total % 60)])
     }
 }

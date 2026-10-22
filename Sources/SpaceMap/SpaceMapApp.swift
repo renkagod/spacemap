@@ -11,29 +11,55 @@ struct SpaceMapApp: App {
         Window("SpaceMap", id: "main") {
             ContentView()
                 .environmentObject(model)
+                // Rebuilds every view, so all text switches to the new language at once.
+                .id(model.language)
         }
         .defaultSize(width: 1280, height: 800)
         .commands {
+            CommandGroup(replacing: .appSettings) {
+                LanguageMenu(model: model)
+            }
             CommandGroup(replacing: .newItem) {
-                Button("Открыть папку…") { AppModel.shared.chooseFolder() }
+                Button(tr("menu.openFolder")) { AppModel.shared.chooseFolder() }
                     .keyboardShortcut("o")
-                Button("Новое сканирование") { AppModel.shared.closeScan() }
+                Button(tr("menu.newScan")) { AppModel.shared.closeScan() }
                     .keyboardShortcut("n")
             }
-            CommandMenu("Навигация") {
-                Button("Наверх") { AppModel.shared.goUp() }
+            CommandMenu(tr("menu.navigation")) {
+                Button(tr("menu.up")) { AppModel.shared.goUp() }
                     .keyboardShortcut(.upArrow, modifiers: .command)
-                Button("К началу") { AppModel.shared.goToRoot() }
+                Button(tr("menu.top")) { AppModel.shared.goToRoot() }
                     .keyboardShortcut(.upArrow, modifiers: [.command, .shift])
                 Divider()
-                Button("Пересканировать папку") { AppModel.shared.rescanCurrent() }
+                Button(tr("menu.rescanFolder")) { AppModel.shared.rescanCurrent() }
                     .keyboardShortcut("r")
-                Button("Остановить сканирование") { AppModel.shared.stopScan() }
+                Button(tr("menu.stopScan")) { AppModel.shared.stopScan() }
                     .keyboardShortcut(".")
                 Divider()
-                Button("Сбросить подсветку типа") { AppModel.shared.focusCategory = nil }
+                Button(tr("menu.clearHighlight")) { AppModel.shared.focusCategory = nil }
                     .keyboardShortcut(.escape, modifiers: .option)
             }
+        }
+    }
+}
+
+/// SpaceMap → Language: follow the system, one of the installed translations, or add a new one.
+private struct LanguageMenu: View {
+    @ObservedObject var model: AppModel
+
+    var body: some View {
+        Menu(tr("menu.language")) {
+            Picker(tr("menu.language"), selection: $model.languageChoice) {
+                Text(tr("menu.language.system")).tag("")
+                ForEach(model.languages) { language in
+                    Text(language.name).tag(language.code)
+                }
+            }
+            .pickerStyle(.inline)
+            .labelsHidden()
+            Divider()
+            Button(tr("menu.language.openFolder")) { model.openTranslationsFolder() }
+            Button(tr("menu.language.help")) { model.openTranslationGuide() }
         }
     }
 }
@@ -46,6 +72,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.activate(ignoringOtherApps: true)
         LaunchOptions.apply(to: AppModel.shared)
+    }
+
+    /// Picks up translations dropped into the translations folder while SpaceMap was in the background.
+    func applicationDidBecomeActive(_ notification: Notification) {
+        AppModel.shared.refreshLanguages()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -68,6 +99,7 @@ func isDirectory(_ url: URL) -> Bool {
 /// `-key value` pairs, so flags without a value go last.
 /// `--snapshot file.png --delay N` saves a picture of the window after N seconds and quits (used by CI);
 /// `--hover`, `--focus <category>`, `--tab <contents|largest|types>` and `--logical` set up the picture.
+/// `-Language <code>` (a user default) picks the interface language for one launch.
 enum LaunchOptions {
     static func apply(to model: AppModel) {
         var scanPath: String?

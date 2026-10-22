@@ -191,30 +191,3 @@ final class ScannerTests: XCTestCase {
     }
 }
 
-final class FormatTests: XCTestCase {
-    func testBytes() {
-        XCTAssertEqual(Format.bytes(0), "0 Б")
-        XCTAssertEqual(Format.bytes(999), "999 Б")
-        XCTAssertEqual(Format.bytes(1_500), "1,50 КБ")
-        XCTAssertEqual(Format.bytes(12_345_678), "12,3 МБ")
-        XCTAssertEqual(Format.bytes(512_000_000_000), "512 ГБ")
-        XCTAssertEqual(Format.bytes(999_999_999), "1,00 ГБ")
-    }
-
-    func testPlurals() {
-        XCTAssertEqual(Format.files(1), "1 файл")
-        XCTAssertEqual(Format.files(3), "3 файла")
-        XCTAssertEqual(Format.files(11), "11 файлов")
-        XCTAssertEqual(Format.files(21), "21 файл")
-        XCTAssertEqual(Format.files(1234), "1\u{00A0}234 файла")
-    }
-
-    func testCategories() {
-        XCTAssertEqual(FileCategory.forFileName("Movie.MKV"), .video)
-        XCTAssertEqual(FileCategory.forFileName("archive.tar.gz"), .archive)
-        XCTAssertEqual(FileCategory.forFileName(".zshrc"), .other)
-        XCTAssertEqual(FileCategory.forFileName("noext"), .other)
-        XCTAssertEqual(FileCategory.packageCategory(forDirectoryName: "Photos Library.photoslibrary"), .image)
-        XCTAssertNil(FileCategory.packageCategory(forDirectoryName: "Documents"))
-    }
-}

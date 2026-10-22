@@ -1,0 +1,11 @@
+/* Texts macOS shows for SpaceMap: privacy prompts, Finder's "Kind" column, Get Info. */
+"CFBundleDisplayName" = "SpaceMap";
+"CFBundleName" = "SpaceMap";
+"NSHumanReadableCopyright" = "SpaceMap, a map of what takes up your disk";
+"NSDesktopFolderUsageDescription" = "SpaceMap measures how much space the files on your Desktop take.";
+"NSDocumentsFolderUsageDescription" = "SpaceMap measures how much space your Documents take.";
+"NSDownloadsFolderUsageDescription" = "SpaceMap measures how much space your Downloads take.";
+"NSRemovableVolumesUsageDescription" = "SpaceMap measures how much space is used on the external disk.";
+"NSNetworkVolumesUsageDescription" = "SpaceMap measures how much space is used on the network disk.";
+/* Document type name (key: CFBundleTypeName in Info.plist). */
+"Folder" = "Folder";

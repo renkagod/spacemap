@@ -8,35 +8,11 @@ public enum FileCategory: UInt8, CaseIterable, Sendable {
         .video, .image, .audio, .archive, .application, .document, .code, .system, .other,
     ]
 
-    public var title: String {
-        switch self {
-        case .video: return "Видео"
-        case .image: return "Изображения"
-        case .audio: return "Музыка и звук"
-        case .archive: return "Архивы и образы"
-        case .application: return "Приложения"
-        case .document: return "Документы"
-        case .code: return "Код и разработка"
-        case .system: return "Системные и кэши"
-        case .other: return "Прочее"
-        case .folder: return "Папки"
-        }
-    }
+    /// Name in the Types tab and highlight labels: key `category.<case>`.
+    public var title: String { tr("category.\(self)") }
 
-    public var shortTitle: String {
-        switch self {
-        case .video: return "Видео"
-        case .image: return "Фото"
-        case .audio: return "Звук"
-        case .archive: return "Архивы"
-        case .application: return "Программы"
-        case .document: return "Документы"
-        case .code: return "Код"
-        case .system: return "Система"
-        case .other: return "Прочее"
-        case .folder: return "Папки"
-        }
-    }
+    /// Name in the legend under the map: key `category.<case>.short`.
+    public var shortTitle: String { tr("category.\(self).short") }
 
     private static let byExtension: [String: FileCategory] = {
         var map: [String: FileCategory] = [:]
@@ -92,10 +68,5 @@ public enum SizeMode: String, CaseIterable, Sendable {
     /// Sum of file lengths (like Finder's "size").
     case logical
 
-    public var title: String {
-        switch self {
-        case .allocated: return "На диске"
-        case .logical: return "Длина файлов"
-        }
-    }
+    public var title: String { tr("size.\(rawValue)") }
 }

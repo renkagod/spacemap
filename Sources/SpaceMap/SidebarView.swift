@@ -14,10 +14,10 @@ struct SidebarView: View {
             SummaryCard()
                 .padding(.horizontal, 12)
                 .padding(.top, 6)
-            Picker("Вид", selection: $model.sidebarTab) {
-                Text("Содержимое").tag(SidebarTab.contents)
-                Text("Крупные").tag(SidebarTab.largest)
-                Text("Типы").tag(SidebarTab.types)
+            Picker(tr("sidebar.view"), selection: $model.sidebarTab) {
+                Text(tr("sidebar.contents")).tag(SidebarTab.contents)
+                Text(tr("sidebar.largest")).tag(SidebarTab.largest)
+                Text(tr("sidebar.types")).tag(SidebarTab.types)
             }
             .pickerStyle(.segmented)
             .labelsHidden()
@@ -26,9 +26,9 @@ struct SidebarView: View {
 
             switch model.sidebarTab {
             case .contents:
-                NodeList(rows: model.rows, emptyText: "Здесь пусто")
+                NodeList(rows: model.rows, emptyText: tr("sidebar.empty.contents"))
             case .largest:
-                NodeList(rows: model.largest, emptyText: "Файлов пока нет")
+                NodeList(rows: model.largest, emptyText: tr("sidebar.empty.largest"))
             case .types:
                 TypesList()
             }
@@ -69,7 +69,8 @@ private struct SummaryCard: View {
     private var detailText: String {
         var text = Format.files(model.currentFiles)
         if !model.isAtRoot, model.rootSize > 0, let root = model.root {
-            text += " · \(Format.percent(Double(model.currentSize) / Double(model.rootSize))) от «\(root.title)»"
+            let share = Format.percent(Double(model.currentSize) / Double(model.rootSize))
+            text += " · " + tr("sidebar.shareOfRoot", share, root.title)
         }
         return text
     }
@@ -100,13 +101,13 @@ private struct VolumeBar: View {
             }
             .frame(height: 8)
             HStack(spacing: 10) {
-                LegendDot(color: .accentColor, text: "Эта папка")
-                LegendDot(color: .secondary.opacity(0.6), text: "Остальное")
-                LegendDot(color: .secondary.opacity(0.2), text: "Свободно \(Format.bytes(volume.available))")
+                LegendDot(color: .accentColor, text: tr("volume.thisFolder"))
+                LegendDot(color: .secondary.opacity(0.6), text: tr("volume.rest"))
+                LegendDot(color: .secondary.opacity(0.2), text: tr("volume.free", Format.bytes(volume.available)))
             }
             .font(.system(size: 10.5))
             .foregroundStyle(.secondary)
-            Text("Диск «\(volume.name)»: \(Format.bytes(volume.total))")
+            Text(tr("volume.disk", volume.name, Format.bytes(volume.total)))
                 .font(.system(size: 10.5))
                 .foregroundStyle(.tertiary)
         }
@@ -134,7 +135,7 @@ private struct NodeList: View {
         if rows.isEmpty {
             VStack {
                 Spacer()
-                Text(model.progress.running ? "Собираю данные…" : emptyText)
+                Text(model.progress.running ? tr("sidebar.collecting") : emptyText)
                     .foregroundStyle(.secondary)
                 Spacer()
             }
@@ -165,17 +166,17 @@ private struct NodeMenu: View {
 
     var body: some View {
         if node.isContainer {
-            Button("Открыть на карте") { model.activate(node) }
+            Button(tr("action.openOnMap")) { model.activate(node) }
         }
-        Button("Открыть") { model.open(node) }
-        Button("Показать в Finder") { model.reveal(node) }
-        Button("Скопировать путь") { model.copyPath(node) }
+        Button(tr("action.open")) { model.open(node) }
+        Button(tr("action.reveal")) { model.reveal(node) }
+        Button(tr("action.copyPath")) { model.copyPath(node) }
         if node.isContainer {
             Divider()
-            Button("Пересканировать") { model.rescan(node) }
+            Button(tr("action.rescan")) { model.rescan(node) }
         }
         Divider()
-        Button("Переместить в Корзину…", role: .destructive) { model.moveToTrash(node) }
+        Button(tr("action.trash"), role: .destructive) { model.moveToTrash(node) }
     }
 }
 
@@ -246,7 +247,7 @@ private struct TypesList: View {
         if model.categories.isEmpty {
             VStack {
                 Spacer()
-                Text(model.progress.running ? "Собираю данные…" : "Нет файлов")
+                Text(model.progress.running ? tr("sidebar.collecting") : tr("sidebar.empty.types"))
                     .foregroundStyle(.secondary)
                 Spacer()
             }
@@ -261,7 +262,7 @@ private struct TypesList: View {
                         }
                     }
                 } footer: {
-                    Text("Нажми на тип, чтобы подсветить его на карте. Приложения и медиатеки считаются целиком.")
+                    Text(tr("sidebar.types.footer"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .padding(.top, 6)

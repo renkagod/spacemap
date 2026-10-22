@@ -144,6 +144,13 @@ final class AppModel: ObservableObject {
     @Published var focusCategory: FileCategory? {
         didSet { if focusCategory != oldValue { requestRender(.fade) } }
     }
+    /// Interface language as chosen in the menu: empty follows the system, otherwise a code like "ru".
+    @Published var languageChoice = UserDefaults.standard.string(forKey: Localization.defaultsKey) ?? "" {
+        didSet { if languageChoice != oldValue { applyLanguage() } }
+    }
+    /// The language actually shown.
+    @Published private(set) var language: String
+    @Published private(set) var languages: [Localization.Language]
 
     private(set) var selectedNode: FileNode?
     private weak var treemapView: TreemapView?
@@ -159,6 +166,12 @@ final class AppModel: ObservableObject {
     private var renderGeneration = 0
     private var shownRenderGeneration = 0
     private var summaryGeneration = 0
+
+    init() {
+        let choice = UserDefaults.standard.string(forKey: Localization.defaultsKey)
+        language = Localization.select(choice).code
+        languages = Localization.availableLanguages()
+    }
 
     // MARK: - Derived state
 
@@ -186,7 +199,7 @@ final class AppModel: ObservableObject {
         if scanner.rootPath == "/" {
             scanner.root.displayName = VolumeInfo.containing("/")?.name ?? "Macintosh HD"
         } else if scanner.rootPath == fileManager.homeDirectoryForCurrentUser.path {
-            scanner.root.displayName = "Домашняя папка"
+            scanner.root.displayName = tr("home.title")
         } else {
             scanner.root.displayName = fileManager.displayName(atPath: scanner.rootPath)
         }
@@ -482,7 +495,7 @@ final class AppModel: ObservableObject {
         let node = item.node ?? item.owner
         let info: HoverInfo
         if item.kind == .aggregate {
-            info = HoverInfo(title: "Ещё \(Format.items(Int64(item.aggregateCount))) помельче",
+            info = HoverInfo(title: Localization.current.plural("hover.smallItems", Int64(item.aggregateCount)),
                              path: node.path + "/…", size: item.size,
                              fraction: Double(item.size) / Double(total), symbol: "square.grid.3x3.fill",
                              category: .other, isContainer: false, fileCount: 0, isAggregate: true)
@@ -601,8 +614,8 @@ final class AppModel: ObservableObject {
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
         panel.treatsFilePackagesAsDirectories = true
-        panel.prompt = "Сканировать"
-        panel.message = "Выбери папку или диск, который нужно разобрать"
+        panel.prompt = tr("picker.prompt")
+        panel.message = tr("picker.message")
         panel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
         if panel.runModal() == .OK, let url = panel.url {
             startScan(url: url)
@@ -628,6 +641,44 @@ final class AppModel: ObservableObject {
         }
     }
 
+    // MARK: - Language
+
+    private func applyLanguage() {
+        let defaults = UserDefaults.standard
+        if languageChoice.isEmpty {
+            defaults.removeObject(forKey: Localization.defaultsKey)
+            defaults.removeObject(forKey: "AppleLanguages")
+        } else {
+            defaults.set(languageChoice, forKey: Localization.defaultsKey)
+            // The system's own menu items (Edit, Window, Quit) follow from the next launch.
+            defaults.set([languageChoice], forKey: "AppleLanguages")
+        }
+        language = Localization.select(languageChoice.isEmpty ? nil : languageChoice).code
+        if let root, root.path == FileManager.default.homeDirectoryForCurrentUser.path {
+            treeLock.lock()
+            root.displayName = tr("home.title")
+            treeLock.unlock()
+        }
+        refreshAll(.none)
+    }
+
+    func refreshLanguages() {
+        let available = Localization.availableLanguages()
+        if available != languages { languages = available }
+    }
+
+    func openTranslationsFolder() {
+        let folder = Localization.userDirectory
+        try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        NSWorkspace.shared.open(folder)
+    }
+
+    func openTranslationGuide() {
+        if let url = URL(string: "https://github.com/renkagod/spacemap/blob/main/TRANSLATING.md") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
     func toggleFocus(_ category: FileCategory) {
         focusCategory = focusCategory == category ? nil : category
     }
@@ -637,13 +688,12 @@ final class AppModel: ObservableObject {
         let size = node.size(sizeMode)
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "Переместить «\(node.title)» в Корзину?"
-        var details = node.isContainer ? "Папка, \(Format.files(node.fileCount)), \(Format.bytes(size))."
-                                       : "Файл, \(Format.bytes(size))."
-        details += " Место освободится, когда очистишь Корзину."
-        alert.informativeText = details
-        alert.addButton(withTitle: "В Корзину")
-        alert.addButton(withTitle: "Отмена")
+        alert.messageText = tr("trash.title", node.title)
+        let details = node.isContainer ? tr("trash.folder", Format.files(node.fileCount), Format.bytes(size))
+                                       : tr("trash.file", Format.bytes(size))
+        alert.informativeText = details + " " + tr("trash.note")
+        alert.addButton(withTitle: tr("trash.confirm"))
+        alert.addButton(withTitle: tr("trash.cancel"))
         alert.buttons.first?.hasDestructiveAction = true
         guard alert.runModal() == .alertFirstButtonReturn else { return }
 
@@ -651,7 +701,7 @@ final class AppModel: ObservableObject {
             try FileManager.default.trashItem(at: node.url, resultingItemURL: nil)
         } catch {
             let failure = NSAlert(error: error)
-            failure.messageText = "Не получилось переместить «\(node.title)» в Корзину"
+            failure.messageText = tr("trash.failed", node.title)
             failure.runModal()
             return
         }
@@ -679,22 +729,22 @@ final class AppModel: ObservableObject {
         menu.addItem(header)
         menu.addItem(.separator())
         if node.isContainer && node !== current {
-            menu.addItem(ActionMenuItem("Открыть на карте", symbol: "arrow.down.right.and.arrow.up.left") { [weak self] in
+            menu.addItem(ActionMenuItem(tr("action.openOnMap"), symbol: "arrow.down.right.and.arrow.up.left") { [weak self] in
                 self?.zoom(into: node, from: self?.treemapView?.rect(for: node))
             })
         }
-        menu.addItem(ActionMenuItem("Открыть", symbol: "arrow.up.forward.app") { [weak self] in self?.open(node) })
-        menu.addItem(ActionMenuItem("Показать в Finder", symbol: "folder") { [weak self] in self?.reveal(node) })
-        menu.addItem(ActionMenuItem("Скопировать путь", symbol: "doc.on.doc") { [weak self] in self?.copyPath(node) })
+        menu.addItem(ActionMenuItem(tr("action.open"), symbol: "arrow.up.forward.app") { [weak self] in self?.open(node) })
+        menu.addItem(ActionMenuItem(tr("action.reveal"), symbol: "folder") { [weak self] in self?.reveal(node) })
+        menu.addItem(ActionMenuItem(tr("action.copyPath"), symbol: "doc.on.doc") { [weak self] in self?.copyPath(node) })
         if node.isContainer {
             menu.addItem(.separator())
-            menu.addItem(ActionMenuItem("Пересканировать", symbol: "arrow.clockwise", enabled: !progress.running) { [weak self] in
+            menu.addItem(ActionMenuItem(tr("action.rescan"), symbol: "arrow.clockwise", enabled: !progress.running) { [weak self] in
                 self?.rescan(node)
             })
         }
         if node !== root {
             menu.addItem(.separator())
-            menu.addItem(ActionMenuItem("Переместить в Корзину…", symbol: "trash") { [weak self] in
+            menu.addItem(ActionMenuItem(tr("action.trash"), symbol: "trash") { [weak self] in
                 self?.moveToTrash(node)
             })
         }

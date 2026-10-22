@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Слова, которые меняются вместе с числом. one: 1, 21, 101; few: 2–4, 22–24; many: 0, 5–20, 25; other: дроби. -->
+<plist version="1.0">
+<dict>
+	<key>count.files</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$@ %1$#@files@</string>
+		<key>files</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>файл</string>
+			<key>few</key>
+			<string>файла</string>
+			<key>many</key>
+			<string>файлов</string>
+			<key>other</key>
+			<string>файла</string>
+		</dict>
+	</dict>
+	<key>count.folders</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$@ %1$#@folders@</string>
+		<key>folders</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>папка</string>
+			<key>few</key>
+			<string>папки</string>
+			<key>many</key>
+			<string>папок</string>
+			<key>other</key>
+			<string>папки</string>
+		</dict>
+	</dict>
+	<key>count.items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$@ %1$#@items@</string>
+		<key>items</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>объект</string>
+			<key>few</key>
+			<string>объекта</string>
+			<key>many</key>
+			<string>объектов</string>
+			<key>other</key>
+			<string>объекта</string>
+		</dict>
+	</dict>
+	<key>hover.smallItems</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>Ещё %2$@ %1$#@items@ помельче</string>
+		<key>items</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>объект</string>
+			<key>few</key>
+			<string>объекта</string>
+			<key>many</key>
+			<string>объектов</string>
+			<key>other</key>
+			<string>объекта</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

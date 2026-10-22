@@ -1,0 +1,135 @@
+/* SpaceMap interface text, English. This is the original every translation is made from.
+   Translate only the text on the right. %@ is a value the app puts in (a name, a size, a number);
+   %1$@ and %2$@ are the first and second values, so their order in a sentence can change.
+   Plural forms ("1 file", "2 files") live in Localizable.stringsdict. See TRANSLATING.md. */
+
+/* Menus */
+"menu.openFolder" = "Open Folder…";
+"menu.newScan" = "New Scan";
+"menu.navigation" = "Navigate";
+"menu.up" = "Go Up";
+"menu.top" = "Go to Top";
+"menu.rescanFolder" = "Rescan Folder";
+"menu.stopScan" = "Stop Scan";
+"menu.clearHighlight" = "Clear Type Highlight";
+"menu.language" = "Language";
+"menu.language.system" = "System";
+"menu.language.openFolder" = "Open Translations Folder";
+"menu.language.help" = "Help Translate SpaceMap…";
+
+/* Welcome screen */
+"welcome.tagline" = "See what is taking up your disk, as one big map you can explore.";
+"welcome.volumeUsage" = "%1$@ of %2$@ used";
+"welcome.chooseFolder" = "Choose Folder…";
+"welcome.chooseFolder.subtitle" = "or drop it onto this window";
+"welcome.access.hidden" = "macOS hides some folders from apps: Mail, Messages, system data.";
+"welcome.access.grant" = "To include them, give SpaceMap Full Disk Access.";
+"welcome.access.button" = "Open Settings";
+"home.title" = "Home Folder";
+
+/* Toolbar and scan status */
+"toolbar.up" = "Up";
+"toolbar.up.help" = "Up (⌘↑, Esc)";
+"toolbar.top" = "Top";
+"toolbar.top.help" = "Back to the scanned folder (⇧⌘↑)";
+"toolbar.newScan.help" = "Choose another disk or folder (⌘N)";
+"toolbar.rescan.help" = "Rescan this folder (⌘R)";
+"status.scanning" = "Scanning “%@”";
+"status.stop.help" = "Stop (⌘.)";
+"status.stopped" = "Stopped: %@";
+"status.done" = "%1$@ in %2$@";
+
+/* Path bar above the map */
+"pathbar.highlighted" = "Highlighted: %@";
+"pathbar.highlighted.help" = "Clear highlight (⌥Esc)";
+"pathbar.sizeMode" = "Size";
+"pathbar.sizeMode.help" = "On Disk is the space files actually take. File Sizes adds up their lengths, like Finder does.";
+
+/* Map, its empty states and the status bar under it */
+"treemap.more" = "%@ more";
+"empty.noAccess.title" = "macOS does not let SpaceMap into this folder";
+"empty.noAccess.detail" = "Give SpaceMap Full Disk Access and rescan.";
+"empty.noAccess.button" = "Open Privacy Settings";
+"empty.reading" = "Reading contents…";
+"empty.folder" = "This folder is empty";
+"banner.inaccessible" = "%@ not accessible";
+"banner.detail" = "macOS protects them. With Full Disk Access the map gets more accurate.";
+"banner.button" = "Grant Access";
+"banner.hide" = "Hide";
+"statusbar.hint" = "Double-click to open · Esc to go back · Right-click for actions";
+"statusbar.hint.short" = "Double-click to open · Esc to go back";
+"legend.highlight.help" = "Highlight %@";
+
+/* Sidebar */
+"sidebar.view" = "View";
+"sidebar.contents" = "Contents";
+"sidebar.largest" = "Largest";
+"sidebar.types" = "Types";
+"sidebar.empty.contents" = "Nothing here";
+"sidebar.empty.largest" = "No files yet";
+"sidebar.empty.types" = "No files";
+"sidebar.collecting" = "Collecting data…";
+"sidebar.shareOfRoot" = "%1$@ of “%2$@”";
+"sidebar.types.footer" = "Click a type to highlight it on the map. Apps and media libraries count as one item.";
+"volume.thisFolder" = "This folder";
+"volume.rest" = "Everything else";
+"volume.free" = "%@ free";
+"volume.disk" = "Disk “%1$@”: %2$@";
+
+/* Actions on a file or folder (right-click menu) */
+"action.openOnMap" = "Open on Map";
+"action.open" = "Open";
+"action.reveal" = "Show in Finder";
+"action.copyPath" = "Copy Path";
+"action.rescan" = "Rescan";
+"action.trash" = "Move to Trash…";
+
+/* Folder picker */
+"picker.prompt" = "Scan";
+"picker.message" = "Choose a folder or disk to look into";
+
+/* Move to Trash dialog */
+"trash.title" = "Move “%@” to the Trash?";
+"trash.folder" = "Folder, %1$@, %2$@.";
+"trash.file" = "File, %@.";
+"trash.note" = "The space is freed when you empty the Trash.";
+"trash.confirm" = "Move to Trash";
+"trash.cancel" = "Cancel";
+"trash.failed" = "Could not move “%@” to the Trash";
+
+/* File types */
+"category.video" = "Video";
+"category.image" = "Images";
+"category.audio" = "Music and Audio";
+"category.archive" = "Archives and Disk Images";
+"category.application" = "Apps";
+"category.document" = "Documents";
+"category.code" = "Code and Development";
+"category.system" = "System and Caches";
+"category.other" = "Other";
+"category.folder" = "Folders";
+"category.video.short" = "Video";
+"category.image.short" = "Photos";
+"category.audio.short" = "Audio";
+"category.archive.short" = "Archives";
+"category.application.short" = "Apps";
+"category.document.short" = "Docs";
+"category.code.short" = "Code";
+"category.system.short" = "System";
+"category.other.short" = "Other";
+"category.folder.short" = "Folders";
+
+/* Size modes */
+"size.allocated" = "On Disk";
+"size.logical" = "File Sizes";
+
+/* Units and number formats. Decimal separators come from the language itself. */
+"unit.B" = "B";
+"unit.KB" = "KB";
+"unit.MB" = "MB";
+"unit.GB" = "GB";
+"unit.TB" = "TB";
+"unit.PB" = "PB";
+"format.percent" = "%@%%";
+"duration.seconds" = "%@ s";
+"duration.minutes" = "%1$@ min %2$@ s";

@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       screenshots:
-        description: Снять скриншоты для README
+        description: Take the README screenshots
         type: boolean
         default: true
 
@@ -36,29 +36,42 @@ jobs:
       - name: Build app
         run: bash scripts/build-app.sh
 
-      - name: Demo folder
-        run: python3 scripts/make_demo_tree.py "$RUNNER_TEMP/Мои файлы"
+      # The same tree with English and Russian names.
+      - name: Demo folders
+        run: |
+          python3 scripts/make_demo_tree.py --lang en "$RUNNER_TEMP/My Files"
+          python3 scripts/make_demo_tree.py --lang ru "$RUNNER_TEMP/Мои файлы"
 
       # Launches the app the way a folder dropped on its Dock icon does and checks that a window
-      # opens and shows the scanned folder.
+      # opens and shows the scanned folder, once per interface language.
       - name: Smoke test
         run: |
           mkdir -p shots
-          open -W --stdout shots/open.log --stderr shots/open.log -a "$PWD/build/SpaceMap.app" "$RUNNER_TEMP/Мои файлы" \
-            --args --snapshot "$PWD/shots/map.png" --delay 6 --logical --hover
-          cat shots/open.log
-          grep -q "snapshot: saved" shots/open.log
-          grep -q "files=9267 " shots/open.log
+          open -W --stdout shots/open-en.log --stderr shots/open-en.log -a "$PWD/build/SpaceMap.app" "$RUNNER_TEMP/My Files" \
+            --args --snapshot "$PWD/shots/smoke-en.png" --delay 6 --logical --hover
+          open -W --stdout shots/open-ru.log --stderr shots/open-ru.log -a "$PWD/build/SpaceMap.app" "$RUNNER_TEMP/Мои файлы" \
+            --args -Language ru --snapshot "$PWD/shots/smoke-ru.png" --delay 6 --logical --hover
+          for log in shots/open-en.log shots/open-ru.log; do
+            cat "$log"
+            grep -q "snapshot: saved" "$log"
+            grep -q "files=9267 " "$log"
+          done
 
       # AppKit reads arguments as "-key value" pairs, so flags without a value go last.
       - name: Screenshots
         if: github.event_name == 'workflow_dispatch' && inputs.screenshots
         run: |
           APP_BIN="$PWD/build/SpaceMap.app/Contents/MacOS/SpaceMap"
-          DEMO="$RUNNER_TEMP/Мои файлы"
-          "$APP_BIN" --snapshot "$PWD/shots/welcome.png" --delay 4
-          "$APP_BIN" --scan "$DEMO" --snapshot "$PWD/shots/types.png" --delay 6 --tab types --focus video --logical
-          "$APP_BIN" --scan "$DEMO" --snapshot "$PWD/shots/largest.png" --delay 6 --tab largest --logical
+          shoot() {
+            local language=$1 demo=$2
+            mkdir -p "shots/$language"
+            "$APP_BIN" -Language "$language" --snapshot "$PWD/shots/$language/welcome.png" --delay 4
+            "$APP_BIN" -Language "$language" --scan "$demo" --snapshot "$PWD/shots/$language/map.png" --delay 6 --logical --hover
+            "$APP_BIN" -Language "$language" --scan "$demo" --snapshot "$PWD/shots/$language/types.png" --delay 6 --tab types --focus video --logical
+            "$APP_BIN" -Language "$language" --scan "$demo" --snapshot "$PWD/shots/$language/largest.png" --delay 6 --tab largest --logical
+          }
+          shoot en "$RUNNER_TEMP/My Files"
+          shoot ru "$RUNNER_TEMP/Мои файлы"
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

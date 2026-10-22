@@ -17,7 +17,7 @@ else
     BIN_DIR=$(swift build -c release --show-bin-path)
 fi
 
-mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources/ru.lproj"
+mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources"
 cp "$BIN_DIR/$APP" "$BUNDLE/Contents/MacOS/$APP"
 cp Resources/Info.plist "$BUNDLE/Contents/Info.plist"
 if [ -n "${VERSION:-}" ]; then
@@ -25,7 +25,13 @@ if [ -n "${VERSION:-}" ]; then
     plutil -replace CFBundleVersion -string "${BUILD_NUMBER:-1}" "$BUNDLE/Contents/Info.plist"
 fi
 printf 'APPL????' > "$BUNDLE/Contents/PkgInfo"
-printf '"CFBundleDisplayName" = "SpaceMap";\n"CFBundleName" = "SpaceMap";\n' > "$BUNDLE/Contents/Resources/ru.lproj/InfoPlist.strings"
+
+# Every Resources/Translations/<language>.lproj, also listed in CFBundleLocalizations so the system
+# menus and privacy prompts come in the same languages.
+cp -R Resources/Translations/*.lproj "$BUNDLE/Contents/Resources/"
+plutil -lint "$BUNDLE/Contents/Resources/"*.lproj/*.strings*
+LANGUAGES=$(cd Resources/Translations && for dir in *.lproj; do printf '"%s",' "${dir%.lproj}"; done)
+plutil -replace CFBundleLocalizations -json "[${LANGUAGES%,}]" "$BUNDLE/Contents/Info.plist"
 
 ICONSET="$OUT/AppIcon.iconset"
 mkdir -p "$ICONSET"

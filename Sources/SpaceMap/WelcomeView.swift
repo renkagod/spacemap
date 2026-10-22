@@ -49,20 +49,20 @@ struct WelcomeView: View {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 250, maximum: 300), spacing: 16)], spacing: 16) {
                         ForEach(volumes) { volume in
                             LocationCard(title: volume.name,
-                                         subtitle: "Занято \(Format.bytes(volume.used)) из \(Format.bytes(volume.total))",
+                                         subtitle: tr("welcome.volumeUsage", Format.bytes(volume.used), Format.bytes(volume.total)),
                                          symbol: volume.isInternal ? "internaldrive.fill" : "externaldrive.fill",
                                          tint: volume.isInternal ? .blue : .orange,
                                          fraction: volume.usedFraction) {
                                 model.startScan(url: volume.url)
                             }
                         }
-                        LocationCard(title: "Домашняя папка",
+                        LocationCard(title: tr("home.title"),
                                      subtitle: (homePath as NSString).abbreviatingWithTildeInPath,
                                      symbol: "house.fill", tint: .green, fraction: nil) {
                             model.startScan(url: URL(fileURLWithPath: homePath))
                         }
-                        LocationCard(title: "Выбрать папку…",
-                                     subtitle: "или перетащи её в это окно",
+                        LocationCard(title: tr("welcome.chooseFolder"),
+                                     subtitle: tr("welcome.chooseFolder.subtitle"),
                                      symbol: "folder.fill.badge.plus", tint: .purple, fraction: nil) {
                             model.chooseFolder()
                         }
@@ -93,7 +93,7 @@ struct WelcomeView: View {
                 .shadow(color: .black.opacity(0.18), radius: 12, y: 6)
             Text("SpaceMap")
                 .font(.system(size: 38, weight: .bold, design: .rounded))
-            Text("Покажу, что съело место на диске — наглядно, большими блоками.")
+            Text(tr("welcome.tagline"))
                 .font(.title3)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -106,12 +106,12 @@ struct WelcomeView: View {
                 .font(.title3)
                 .foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Часть папок macOS прячет от программ: почту, «Сообщения», системные данные.")
-                Text("Чтобы учесть и их, дай SpaceMap «Полный доступ к диску».")
+                Text(tr("welcome.access.hidden"))
+                Text(tr("welcome.access.grant"))
             }
             .font(.callout)
             .foregroundStyle(.secondary)
-            Button("Открыть настройки") { model.openFullDiskAccessSettings() }
+            Button(tr("welcome.access.button")) { model.openFullDiskAccessSettings() }
                 .buttonStyle(.link)
         }
         .padding(.horizontal, 16)

@@ -1,10 +1,13 @@
 """Builds a believable home folder out of sparse files, for the README screenshots.
 
 Files get their logical size via truncate() and take almost no disk space, so screenshots are taken
-in the "Длина файлов" (logical size) mode.
+in the "File Sizes" (logical size) mode. --lang picks English or Russian folder and file names; the
+tree is the same, file for file and byte for byte.
 
     python3 scripts/make_demo_tree.py ~/SpaceMapDemo
+    python3 scripts/make_demo_tree.py --lang ru ~/SpaceMapDemo
 """
+import argparse
 import random
 import sys
 from pathlib import Path
@@ -14,6 +17,11 @@ MB = 1_000_000
 KB = 1_000
 
 rng = random.Random(42)
+language = "en"
+
+
+def L(english: str, russian: str) -> str:
+    return russian if language == "ru" else english
 
 
 def make(path: Path, size: int) -> None:
@@ -27,68 +35,81 @@ def spread(low: float, high: float) -> float:
 
 
 def build(root: Path) -> None:
-    movies = root / "Фильмы"
-    for name, size in [("Дюна. Часть вторая (2024) 2160p.mkv", 58 * GB), ("Интерстеллар 2160p.mkv", 64 * GB),
-                       ("Бегущий по лезвию 2049.mkv", 41 * GB), ("Оппенгеймер 1080p.mp4", 14 * GB),
-                       ("Мастер и Маргарита.mkv", 22 * GB), ("Брат 2.avi", 1.4 * GB)]:
+    movies = root / L("Movies", "Фильмы")
+    for name, size in [(L("Dune Part Two (2024) 2160p.mkv", "Дюна. Часть вторая (2024) 2160p.mkv"), 58 * GB),
+                       (L("Interstellar 2160p.mkv", "Интерстеллар 2160p.mkv"), 64 * GB),
+                       (L("Blade Runner 2049.mkv", "Бегущий по лезвию 2049.mkv"), 41 * GB),
+                       (L("Oppenheimer 1080p.mp4", "Оппенгеймер 1080p.mp4"), 14 * GB),
+                       (L("Arrival 2160p.mkv", "Мастер и Маргарита.mkv"), 22 * GB),
+                       (L("Pulp Fiction.avi", "Брат 2.avi"), 1.4 * GB)]:
         make(movies / name, size)
+    shows = movies / L("TV Shows", "Сериалы")
     for season in range(1, 4):
         for episode in range(1, 11):
-            make(movies / "Сериалы" / "Чернобыль" / f"Сезон {season}" / f"S0{season}E{episode:02}.mkv",
-                 spread(2.1, 3.4) * GB)
+            season_dir = shows / L("Chernobyl", "Чернобыль") / L(f"Season {season}", f"Сезон {season}")
+            make(season_dir / f"S0{season}E{episode:02}.mkv", spread(2.1, 3.4) * GB)
     for episode in range(1, 9):
-        make(movies / "Сериалы" / "Слово пацана" / f"Серия {episode}.mp4", spread(1.2, 1.9) * GB)
+        make(shows / L("Severance", "Слово пацана") / L(f"Episode {episode}.mp4", f"Серия {episode}.mp4"),
+             spread(1.2, 1.9) * GB)
 
-    photos = root / "Изображения"
+    photos = root / L("Pictures", "Изображения")
     library = photos / "Photos Library.photoslibrary"
     for index in range(1800):
         make(library / "originals" / f"{index % 16:X}" / f"IMG_{index:05}.HEIC", spread(1.8, 4.5) * MB)
     for index in range(220):
         make(library / "originals" / f"{index % 16:X}" / f"VID_{index:04}.MOV", spread(40, 600) * MB)
     make(library / "database" / "Photos.sqlite", 1.9 * GB)
+    trip = photos / L("Georgia Trip 2025", "Отпуск в Грузии 2025")
     for index in range(260):
-        make(photos / "Отпуск в Грузии 2025" / f"DSC{index:05}.ARW", spread(24, 38) * MB)
+        make(trip / f"DSC{index:05}.ARW", spread(24, 38) * MB)
     for index in range(140):
-        make(photos / "Отпуск в Грузии 2025" / "jpeg" / f"DSC{index:05}.jpg", spread(6, 14) * MB)
+        make(trip / "jpeg" / f"DSC{index:05}.jpg", spread(6, 14) * MB)
     for index in range(90):
-        make(photos / "Скриншоты" / f"Снимок экрана {index}.png", spread(0.6, 4) * MB)
-    make(photos / "Обои" / "wallpaper-6k.heic", 38 * MB)
+        make(photos / L("Screenshots", "Скриншоты") / L(f"Screenshot {index}.png", f"Снимок экрана {index}.png"),
+             spread(0.6, 4) * MB)
+    make(photos / L("Wallpapers", "Обои") / "wallpaper-6k.heic", 38 * MB)
 
-    music = root / "Музыка"
-    for artist, albums in [("Кино", 6), ("Radiohead", 5), ("Hans Zimmer", 4), ("Земфира", 4), ("Daft Punk", 3)]:
+    music = root / L("Music", "Музыка")
+    for artist, albums in [(L("Pink Floyd", "Кино"), 6), ("Radiohead", 5), ("Hans Zimmer", 4),
+                           (L("Massive Attack", "Земфира"), 4), ("Daft Punk", 3)]:
         for album in range(albums):
+            album_dir = music / L("Music Library", "Медиатека") / artist / L(f"Album {album + 1}", f"Альбом {album + 1}")
             for track in range(12):
-                make(music / "Медиатека" / artist / f"Альбом {album + 1}" / f"{track + 1:02} трек.flac",
-                     spread(25, 60) * MB)
-    for project in ["Новый трек", "Демо 3", "Ремикс"]:
+                make(album_dir / L(f"{track + 1:02} Track.flac", f"{track + 1:02} трек.flac"), spread(25, 60) * MB)
+    for project in [L("New Track", "Новый трек"), L("Demo 3", "Демо 3"), L("Remix", "Ремикс")]:
         project_dir = music / "Logic" / f"{project}.logicx"
         for take in range(30):
             make(project_dir / "Media" / "Audio Files" / f"Take {take}.wav", spread(30, 140) * MB)
     for index in range(40):
-        make(music / "Сэмплы" / f"kit_{index}.zip", spread(80, 400) * MB)
+        make(music / L("Samples", "Сэмплы") / f"kit_{index}.zip", spread(80, 400) * MB)
 
-    downloads = root / "Загрузки"
+    downloads = root / L("Downloads", "Загрузки")
     for name, size in [("Xcode_16.4.xip", 3.3 * GB), ("ubuntu-24.04-desktop-amd64.iso", 6.1 * GB),
                        ("Windows11_ARM.iso", 5.4 * GB), ("DaVinci_Resolve_19.dmg", 3.4 * GB),
-                       ("Steam.dmg", 0.2 * GB), ("Telegram.dmg", 0.1 * GB), ("Курс по Swift.zip", 9.8 * GB),
-                       ("бэкап телефона.zip", 18 * GB), ("Docker.dmg", 1.6 * GB)]:
+                       ("Steam.dmg", 0.2 * GB), ("Telegram.dmg", 0.1 * GB),
+                       (L("Swift Course.zip", "Курс по Swift.zip"), 9.8 * GB),
+                       (L("phone backup.zip", "бэкап телефона.zip"), 18 * GB), ("Docker.dmg", 1.6 * GB)]:
         make(downloads / name, size)
     for index in range(70):
         make(downloads / f"document ({index}).pdf", spread(0.2, 12) * MB)
     for index in range(25):
         make(downloads / f"IMG_{4000 + index}.jpg", spread(2, 6) * MB)
 
-    documents = root / "Документы"
+    documents = root / L("Documents", "Документы")
     for index in range(120):
-        make(documents / "Учёба" / f"Лекция {index + 1}.pdf", spread(1, 40) * MB)
+        make(documents / L("University", "Учёба") / L(f"Lecture {index + 1}.pdf", f"Лекция {index + 1}.pdf"),
+             spread(1, 40) * MB)
+    work = documents / L("Work", "Работа")
     for index in range(30):
-        make(documents / "Работа" / f"Отчёт {index + 1}.docx", spread(0.1, 3) * MB)
-        make(documents / "Работа" / f"Таблица {index + 1}.xlsx", spread(0.1, 8) * MB)
+        make(work / L(f"Report {index + 1}.docx", f"Отчёт {index + 1}.docx"), spread(0.1, 3) * MB)
+        make(work / L(f"Budget {index + 1}.xlsx", f"Таблица {index + 1}.xlsx"), spread(0.1, 8) * MB)
     for index in range(8):
-        make(documents / "Презентации" / f"Питч {index + 1}.key", spread(60, 900) * MB)
-    make(documents / "Книги" / "Совершенный код.epub", 18 * MB)
+        make(documents / L("Presentations", "Презентации") / L(f"Pitch {index + 1}.key", f"Питч {index + 1}.key"),
+             spread(60, 900) * MB)
+    books = documents / L("Books", "Книги")
+    make(books / L("Code Complete.epub", "Совершенный код.epub"), 18 * MB)
     for index in range(60):
-        make(documents / "Книги" / f"книга_{index}.pdf", spread(2, 60) * MB)
+        make(books / L(f"book_{index}.pdf", f"книга_{index}.pdf"), spread(2, 60) * MB)
 
     projects = root / "Developer"
     for project in ["spacemap", "telegram-bot", "site", "ml-experiments"]:
@@ -130,6 +151,11 @@ if __name__ == "__main__":
     if sys.platform != "darwin":
         # Only APFS keeps truncate()d files sparse; elsewhere this would write ~500 GB of zeros.
         sys.exit("run this on macOS: other file systems do not create sparse files")
-    target = Path(sys.argv[1] if len(sys.argv) > 1 else "SpaceMapDemo").expanduser()
+    parser = argparse.ArgumentParser(description="Demo folder for the README screenshots")
+    parser.add_argument("target", nargs="?", default="SpaceMapDemo")
+    parser.add_argument("--lang", choices=["en", "ru"], default="en")
+    args = parser.parse_args()
+    language = args.lang
+    target = Path(args.target).expanduser()
     build(target)
     print(f"demo tree in {target}")

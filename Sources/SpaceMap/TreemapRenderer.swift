@@ -177,7 +177,7 @@ enum TreemapRenderer {
                 context.restoreGState()
             }
             guard rect.width >= 52, rect.height >= 20 else { return }
-            drawCenteredLabel(title: "ещё \(Format.count(Int64(item.aggregateCount)))",
+            drawCenteredLabel(title: tr("treemap.more", Format.count(Int64(item.aggregateCount))),
                               detail: Format.bytes(item.size), in: rect,
                               titleColor: CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.6),
                               detailColor: CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.4), shadow: false)

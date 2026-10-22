@@ -1,0 +1,11 @@
+/* Тексты, которые macOS показывает за SpaceMap: запросы доступа, колонка «Тип» в Finder, «Свойства». */
+"CFBundleDisplayName" = "SpaceMap";
+"CFBundleName" = "SpaceMap";
+"NSHumanReadableCopyright" = "SpaceMap, карта занятого места на диске";
+"NSDesktopFolderUsageDescription" = "SpaceMap считает, сколько места занимают файлы на Рабочем столе.";
+"NSDocumentsFolderUsageDescription" = "SpaceMap считает, сколько места занимают Документы.";
+"NSDownloadsFolderUsageDescription" = "SpaceMap считает, сколько места занимают Загрузки.";
+"NSRemovableVolumesUsageDescription" = "SpaceMap считает, сколько места занято на внешнем диске.";
+"NSNetworkVolumesUsageDescription" = "SpaceMap считает, сколько места занято на сетевом диске.";
+/* Document type name (key: CFBundleTypeName in Info.plist). */
+"Folder" = "Папка";

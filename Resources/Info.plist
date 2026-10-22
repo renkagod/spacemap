@@ -3,9 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>ru</string>
+	<string>en</string>
 	<key>CFBundleLocalizations</key>
 	<array>
+		<string>en</string>
 		<string>ru</string>
 	</array>
 	<key>CFBundleDisplayName</key>
@@ -37,22 +38,22 @@
 	<key>NSSupportsAutomaticTermination</key>
 	<false/>
 	<key>NSHumanReadableCopyright</key>
-	<string>SpaceMap — карта занятого места на диске</string>
+	<string>SpaceMap, a map of what takes up your disk</string>
 	<key>NSDesktopFolderUsageDescription</key>
-	<string>SpaceMap считает, сколько места занимают файлы на Рабочем столе.</string>
+	<string>SpaceMap measures how much space the files on your Desktop take.</string>
 	<key>NSDocumentsFolderUsageDescription</key>
-	<string>SpaceMap считает, сколько места занимают Документы.</string>
+	<string>SpaceMap measures how much space your Documents take.</string>
 	<key>NSDownloadsFolderUsageDescription</key>
-	<string>SpaceMap считает, сколько места занимают Загрузки.</string>
+	<string>SpaceMap measures how much space your Downloads take.</string>
 	<key>NSRemovableVolumesUsageDescription</key>
-	<string>SpaceMap считает, сколько места занято на внешнем диске.</string>
+	<string>SpaceMap measures how much space is used on the external disk.</string>
 	<key>NSNetworkVolumesUsageDescription</key>
-	<string>SpaceMap считает, сколько места занято на сетевом диске.</string>
+	<string>SpaceMap measures how much space is used on the network disk.</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Папка</string>
+			<string>Folder</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>LSHandlerRank</key>

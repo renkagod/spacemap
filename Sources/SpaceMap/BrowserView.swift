@@ -22,14 +22,14 @@ struct BrowserView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigation) {
                 Button { model.goUp() } label: {
-                    Label("Наверх", systemImage: "chevron.up")
+                    Label(tr("toolbar.up"), systemImage: "chevron.up")
                 }
-                .help("Наверх (⌘↑, Esc)")
+                .help(tr("toolbar.up.help"))
                 .disabled(!model.canGoUp)
                 Button { model.goToRoot() } label: {
-                    Label("К началу", systemImage: "arrow.up.to.line")
+                    Label(tr("toolbar.top"), systemImage: "arrow.up.to.line")
                 }
-                .help("К началу (⇧⌘↑)")
+                .help(tr("toolbar.top.help"))
                 .disabled(model.isAtRoot)
             }
             ToolbarItem(placement: .principal) {
@@ -38,9 +38,9 @@ struct BrowserView: View {
             ToolbarItemGroup(placement: .primaryAction) {
                 RescanButton(progress: model.progress) { model.rescanCurrent() }
                 Button { model.closeScan() } label: {
-                    Label("Новое сканирование", systemImage: "plus.magnifyingglass")
+                    Label(tr("menu.newScan"), systemImage: "plus.magnifyingglass")
                 }
-                .help("Выбрать другой диск или папку (⌘N)")
+                .help(tr("toolbar.newScan.help"))
             }
         }
     }
@@ -52,9 +52,9 @@ private struct RescanButton: View {
 
     var body: some View {
         Button(action: action) {
-            Label("Пересканировать", systemImage: "arrow.clockwise")
+            Label(tr("action.rescan"), systemImage: "arrow.clockwise")
         }
-        .help("Пересканировать эту папку (⌘R)")
+        .help(tr("toolbar.rescan.help"))
         .disabled(progress.running)
     }
 }
@@ -69,7 +69,7 @@ private struct ScanStatus: View {
                 ProgressView()
                     .controlSize(.small)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Сканирую «\(progress.target)»")
+                    Text(tr("status.scanning", progress.target))
                         .font(.system(size: 12, weight: .semibold))
                         .lineLimit(1)
                     Text("\(Format.files(progress.stats.files)) · \(Format.bytes(progress.stats.allocated)) · \(Format.duration(progress.stats.elapsed))")
@@ -83,13 +83,13 @@ private struct ScanStatus: View {
                         .font(.system(size: 16))
                 }
                 .buttonStyle(.borderless)
-                .help("Остановить (⌘.)")
+                .help(tr("status.stop.help"))
             } else if let result = progress.lastResult {
                 Image(systemName: result.cancelled ? "pause.circle.fill" : "checkmark.circle.fill")
                     .foregroundStyle(result.cancelled ? Color.orange : Color.green)
                 Text(result.cancelled
-                     ? "Остановлено: \(Format.files(result.files))"
-                     : "\(Format.files(result.files)) за \(Format.duration(result.elapsed))")
+                     ? tr("status.stopped", Format.files(result.files))
+                     : tr("status.done", Format.files(result.files), Format.duration(result.elapsed)))
                     .font(.system(size: 12))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
@@ -133,7 +133,7 @@ private struct PathBar: View {
                 Button { model.focusCategory = nil } label: {
                     HStack(spacing: 5) {
                         Circle().fill(focus.color).frame(width: 8, height: 8)
-                        Text("Подсвечено: \(focus.title)")
+                        Text(tr("pathbar.highlighted", focus.title))
                         Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
                     }
                     .font(.system(size: 11.5, weight: .medium))
@@ -142,9 +142,9 @@ private struct PathBar: View {
                     .background(focus.color.opacity(0.16), in: Capsule())
                 }
                 .buttonStyle(.plain)
-                .help("Убрать подсветку (⌥Esc)")
+                .help(tr("pathbar.highlighted.help"))
             }
-            Picker("Размер", selection: $model.sizeMode) {
+            Picker(tr("pathbar.sizeMode"), selection: $model.sizeMode) {
                 ForEach(SizeMode.allCases, id: \.self) { mode in
                     Text(mode.title).tag(mode)
                 }
@@ -153,7 +153,7 @@ private struct PathBar: View {
             .labelsHidden()
             .controlSize(.small)
             .fixedSize()
-            .help("«На диске» — сколько места реально занято. «Длина файлов» — сумма размеров, как в Finder.")
+            .help(tr("pathbar.sizeMode.help"))
             .padding(.trailing, 10)
         }
         .frame(height: 34)
@@ -232,20 +232,20 @@ private struct EmptyFolderView: View {
                 Image(systemName: "lock.fill")
                     .font(.system(size: 40))
                     .foregroundStyle(.secondary)
-                Text("macOS не пускает в эту папку")
+                Text(tr("empty.noAccess.title"))
                     .font(.title3.weight(.semibold))
-                Text("Дай SpaceMap «Полный доступ к диску» и пересканируй.")
+                Text(tr("empty.noAccess.detail"))
                     .foregroundStyle(.secondary)
-                Button("Открыть настройки доступа") { model.openFullDiskAccessSettings() }
+                Button(tr("empty.noAccess.button")) { model.openFullDiskAccessSettings() }
             } else if model.progress.running {
                 ProgressView()
-                Text("Читаю содержимое…")
+                Text(tr("empty.reading"))
                     .foregroundStyle(.secondary)
             } else {
                 Image(systemName: "folder")
                     .font(.system(size: 40))
                     .foregroundStyle(.secondary)
-                Text("Папка пуста")
+                Text(tr("empty.folder"))
                     .font(.title3.weight(.semibold))
             }
         }
@@ -264,13 +264,13 @@ private struct AccessBanner: View {
                 .font(.title2)
                 .foregroundStyle(.yellow)
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(Format.folders(Int64(model.inaccessibleCount))) без доступа")
+                Text(tr("banner.inaccessible", Format.folders(Int64(model.inaccessibleCount))))
                     .font(.system(size: 13, weight: .semibold))
-                Text("macOS защищает их. С «Полным доступом к диску» карта будет точнее.")
+                Text(tr("banner.detail"))
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
             }
-            Button("Дать доступ") { model.openFullDiskAccessSettings() }
+            Button(tr("banner.button")) { model.openFullDiskAccessSettings() }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.small)
             Button {
@@ -281,7 +281,7 @@ private struct AccessBanner: View {
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.plain)
-            .help("Скрыть")
+            .help(tr("banner.hide"))
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
@@ -328,7 +328,7 @@ private struct StatusBar: View {
                     HStack(spacing: 14) {
                         Legend()
                         Spacer(minLength: 10)
-                        Text("Двойной клик — внутрь · Esc — назад · правый клик — действия")
+                        Text(tr("statusbar.hint"))
                             .foregroundStyle(.tertiary)
                             .lineLimit(1)
                     }
@@ -336,7 +336,7 @@ private struct StatusBar: View {
                         Legend()
                         Spacer(minLength: 0)
                     }
-                    Text("Двойной клик — внутрь · Esc — назад")
+                    Text(tr("statusbar.hint.short"))
                         .foregroundStyle(.tertiary)
                 }
             }
@@ -366,7 +366,7 @@ private struct Legend: View {
                     .opacity(model.focusCategory == nil || model.focusCategory == category ? 1 : 0.4)
                 }
                 .buttonStyle(.plain)
-                .help("Подсветить: \(category.title)")
+                .help(tr("legend.highlight.help", category.title))
             }
         }
         .fixedSize()

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+Words that change with a number: "1 file", "2 files".
+In NSStringLocalizedFormatKey, %2$@ is the number (already formatted, like 1,234) and %1$#@name@
+is where the word goes. Translate the words under one/other. Languages with more forms add the keys
+they need: zero, one, two, few, many, other (see TRANSLATING.md).
+-->
+<plist version="1.0">
+<dict>
+	<key>count.files</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$@ %1$#@files@</string>
+		<key>files</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>file</string>
+			<key>other</key>
+			<string>files</string>
+		</dict>
+	</dict>
+	<key>count.folders</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$@ %1$#@folders@</string>
+		<key>folders</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>folder</string>
+			<key>other</key>
+			<string>folders</string>
+		</dict>
+	</dict>
+	<key>count.items</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$@ %1$#@items@</string>
+		<key>items</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>item</string>
+			<key>other</key>
+			<string>items</string>
+		</dict>
+	</dict>
+	<key>hover.smallItems</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%2$@ more small %1$#@items@</string>
+		<key>items</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>item</string>
+			<key>other</key>
+			<string>items</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
