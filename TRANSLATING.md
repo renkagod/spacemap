@@ -2,9 +2,9 @@
 
 # Translating SpaceMap
 
-<a href="#english"><img src="https://img.shields.io/badge/English-0969da?style=for-the-badge" height="44" alt="English"></a>
+<a href="#english"><img src="docs/buttons/english.svg" width="200" alt="English"></a>
 &nbsp;&nbsp;
-<a href="#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9"><img src="https://img.shields.io/badge/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-0969da?style=for-the-badge" height="44" alt="Русский"></a>
+<a href="#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9"><img src="docs/buttons/russian.svg" width="200" alt="Русский"></a>
 
 </div>
 
@@ -87,8 +87,8 @@ translates them, and `swift test` lists the missing keys.
 
 ## Русский
 
-<a href="#english"><img src="https://img.shields.io/badge/English-6e7781?style=for-the-badge" height="36" alt="English"></a>
-<a href="#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9"><img src="https://img.shields.io/badge/%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9-0969da?style=for-the-badge" height="36" alt="Русский"></a>
+<a href="#english"><img src="docs/buttons/english-dim.svg" width="200" alt="English"></a>
+<a href="#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9"><img src="docs/buttons/russian.svg" width="200" alt="Русский"></a>
 
 Тексты интерфейса лежат в [`Resources/Translations`](Resources/Translations), по папке на язык.
 Оригинал, с которого делают переводы, это [`en.lproj`](Resources/Translations/en.lproj). В каждой
