@@ -99,11 +99,13 @@ func isDirectory(_ url: URL) -> Bool {
 /// `-key value` pairs, so flags without a value go last.
 /// `--snapshot file.png --delay N` saves a picture of the window after N seconds and quits (used by CI);
 /// `--hover`, `--focus <category>`, `--tab <contents|largest|types>` and `--logical` set up the picture.
+/// `--record <folder> --delay N` records the frames of a short walk through the map instead (see `DemoRecorder`).
 /// `-Language <code>` (a user default) picks the interface language for one launch.
 enum LaunchOptions {
     static func apply(to model: AppModel) {
         var scanPath: String?
         var snapshotPath: String?
+        var recordPath: String?
         var delay: Double = 10
         var hover = false
         var focus: FileCategory?
@@ -120,6 +122,9 @@ enum LaunchOptions {
                 index += 2
             case "--snapshot":
                 snapshotPath = value
+                index += 2
+            case "--record":
+                recordPath = value
                 index += 2
             case "--delay":
                 delay = value.flatMap(Double.init) ?? delay
@@ -172,19 +177,30 @@ enum LaunchOptions {
                 }
             }
         }
+        if let recordPath {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                DemoRecorder(model: model, directory: recordPath).run()
+            }
+        }
+    }
+
+    /// The main window as it looks right now, title bar included.
+    static func windowImage() -> NSBitmapImageRep? {
+        let candidates = NSApp.windows.filter { $0.contentView != nil && $0.frame.width > 300 }
+        guard let window = candidates.first(where: { $0.isVisible }) ?? candidates.first,
+              let view = window.contentView?.superview ?? window.contentView,
+              let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return nil }
+        view.cacheDisplay(in: view.bounds, to: rep)
+        return rep
     }
 
     private static func saveSnapshot(to path: String) {
-        let candidates = NSApp.windows.filter { $0.contentView != nil && $0.frame.width > 300 }
         let summary = NSApp.windows.map { "\($0.className) visible=\($0.isVisible) \(Int($0.frame.width))x\(Int($0.frame.height))" }
         print("snapshot: windows " + summary.joined(separator: ", "))
-        guard let window = candidates.first(where: { $0.isVisible }) ?? candidates.first,
-              let view = window.contentView?.superview ?? window.contentView,
-              let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else {
+        guard let rep = windowImage() else {
             print("snapshot: no window")
             return
         }
-        view.cacheDisplay(in: view.bounds, to: rep)
         if let data = rep.representation(using: .png, properties: [:]) {
             try? data.write(to: URL(fileURLWithPath: path))
             print("snapshot: saved \(path)")
