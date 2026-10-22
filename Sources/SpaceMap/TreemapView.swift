@@ -210,11 +210,15 @@ final class TreemapView: NSView {
                       width: full.width * sx, height: full.height * sy)
     }
 
+    /// Stretches every animation, so the recording made by `--record` catches enough frames of each zoom.
+    static var slowMotion: CFTimeInterval = 1
+
     private func animate(_ kind: Animation.Kind, rect: CGRect, oldImage: NSImage?, duration: CFTimeInterval) {
         let reduceMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
         let effectiveKind: Animation.Kind = reduceMotion ? .fade : kind
         animation = Animation(kind: effectiveKind, rect: rect, oldImage: oldImage,
-                              start: CACurrentMediaTime(), duration: reduceMotion ? 0.15 : duration)
+                              start: CACurrentMediaTime(),
+                              duration: (reduceMotion ? 0.15 : duration) * Self.slowMotion)
         animationTimer?.invalidate()
         let timer = Timer(timeInterval: 1.0 / 120.0, repeats: true) { [weak self] timer in
             guard let self, let animation = self.animation else {

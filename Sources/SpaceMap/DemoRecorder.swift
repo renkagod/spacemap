@@ -21,6 +21,7 @@ final class DemoRecorder {
 
     func run() {
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        TreemapView.slowMotion = 2.5
         start = CACurrentMediaTime()
         capture()
         let timer = Timer(timeInterval: 1.0 / 15, repeats: true) { [weak self] _ in self?.capture() }
@@ -30,14 +31,14 @@ final class DemoRecorder {
         let steps: [(at: Double, action: () -> Void)] = [
             (0.0, { self.model.simulateHoverOnLargest() }),
             (1.6, { self.zoomIntoLargest() }),
-            (2.2, { self.model.simulateHoverOnLargest() }),
-            (3.6, { self.zoomIntoLargest() }),
-            (4.2, { self.model.simulateHoverOnLargest() }),
-            (5.6, { self.model.goUp() }),
-            (6.6, { self.model.goUp() }),
-            (7.4, { self.model.focusCategory = .video }),
-            (9.4, { self.model.focusCategory = nil }),
-            (10.4, { self.finish() }),
+            (3.0, { self.model.simulateHoverOnLargest() }),
+            (4.4, { self.zoomIntoLargest() }),
+            (5.8, { self.model.simulateHoverOnLargest() }),
+            (7.2, { self.model.goUp() }),
+            (8.6, { self.model.goUp() }),
+            (10.0, { self.model.focusCategory = .video }),
+            (12.0, { self.model.focusCategory = nil }),
+            (13.0, { self.finish() }),
         ]
         for step in steps {
             DispatchQueue.main.asyncAfter(deadline: .now() + step.at, execute: step.action)
