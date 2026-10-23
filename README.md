@@ -12,6 +12,7 @@ See what is eating your Mac's disk, as one big map you can walk through.<br>
 ![macOS 13+](https://img.shields.io/badge/macOS-13%2B-blue)
 ![Swift](https://img.shields.io/badge/Swift-5.9-orange)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Donate](https://img.shields.io/badge/Donate-crypto-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/renkagod/.github/blob/main/DONATE.md)
 
 <a href="#english"><img src="docs/buttons/english.svg" width="200" alt="English"></a>
 &nbsp;&nbsp;
@@ -121,6 +122,10 @@ Report bugs and ideas in [issues](https://github.com/renkagod/spacemap/issues). 
 welcome; check that `swift test` and `bash scripts/build-app.sh` pass before sending one.
 Translations into new languages are welcome too, see [TRANSLATING.md](TRANSLATING.md).
 
+### Support
+
+If this project is useful to you, you can support it with crypto: [donation addresses](https://github.com/renkagod/.github/blob/main/DONATE.md).
+
 ### License
 
 [MIT](LICENSE)
@@ -224,6 +229,10 @@ open build/SpaceMap.app
 Баги и идеи пиши в [issues](https://github.com/renkagod/spacemap/issues). Пулл-реквесты
 приветствуются: перед отправкой проверь, что проходят `swift test` и `bash scripts/build-app.sh`.
 Переводы на другие языки тоже, инструкция в [TRANSLATING.md](TRANSLATING.md#%D1%80%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9).
+
+### Поддержать проект
+
+Если проект оказался полезен, можно поддержать его криптой: [адреса для доната](https://github.com/renkagod/.github/blob/main/DONATE.md).
 
 ### Лицензия
 
